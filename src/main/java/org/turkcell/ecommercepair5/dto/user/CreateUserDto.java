@@ -9,8 +9,6 @@ import org.hibernate.validator.constraints.Length;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
 public class CreateUserDto {
 
     @NotBlank(message = "First name cannot be blank!")
