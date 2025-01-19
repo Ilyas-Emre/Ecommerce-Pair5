@@ -1,5 +1,6 @@
 package org.turkcell.ecommercepair5.controller;
 
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 import org.turkcell.ecommercepair5.dto.user.*;
 import org.turkcell.ecommercepair5.entity.User;
@@ -21,21 +22,21 @@ public class UsersController {
     }
 
     @PostMapping("create")
-    public void add(@RequestBody CreateUserDto createUserDto)
+    public void add(@RequestBody @Valid CreateUserDto createUserDto)
 
     {
         userService.add(createUserDto);
     }
 
     @PutMapping("update")
-    public void add(@RequestBody UpdateUserDto updateUserDto)
+    public void update(@RequestBody @Valid UpdateUserDto updateUserDto)
 
     {
         userService.update(updateUserDto);
     }
 
     @PutMapping("delete")
-    public void add(@RequestBody DeleteUserDto deleteUserDto)
+    public void delete(@RequestBody DeleteUserDto deleteUserDto)
 
     {
         userService.delete(deleteUserDto);
@@ -49,7 +50,7 @@ public class UsersController {
     }
 
     @PostMapping("login")
-    public String login(@RequestBody LoginDto loginDto)
+    public String login(@RequestBody @Valid LoginDto loginDto)
 
     {
         return userService.login(loginDto);

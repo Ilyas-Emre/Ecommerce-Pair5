@@ -42,7 +42,7 @@ public class UserServiceImpl implements UserService {
         userToUpdate.setFirstName(updateUserDto.getFirstName());
         userToUpdate.setLastName(updateUserDto.getLastName());
         userToUpdate.setEmail(updateUserDto.getEmail());
-        userToUpdate.setPassword(updateUserDto.getPassword());
+        userToUpdate.setPassword(bCryptPasswordEncoder.encode(updateUserDto.getPassword()));
         userRepository.save(userToUpdate);
     }
 

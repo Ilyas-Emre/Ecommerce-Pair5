@@ -39,4 +39,7 @@ public class OrderDetail {
     @NotNull
     @Column(name = "unit_price", nullable = false)
     private BigDecimal unitPrice;
+
+    @Column(name = "is_active", nullable = false)
+    private Boolean isActive;
 }

@@ -34,4 +34,7 @@ public class Category {
     @JsonIgnore
     private List<Product> products;
 
+    @Column(name = "is_active", nullable = false)
+    private Boolean isActive;
+
 }

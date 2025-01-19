@@ -26,22 +26,22 @@ public class User {
     @Column(name = "id")
     private Integer id;
 
-    @Email(message = "Please enter a valid email address!")
-    @NotNull(message = "Email cannot be null!")
+//    @Email(message = "Please enter a valid email address!")
+//    @NotNull(message = "Email cannot be null!")
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 
-    @NotNull(message = "Password cannot be null!")
-    @Size(min = 8, max = 64, message = "Password must be at least 8 characters long!")
+//    @NotNull(message = "Password cannot be null!")
+//    @Size(min = 8, max = 64, message = "Password must be at least 8 characters long!")
     @Column(name = "password", nullable = false, length = 64)
     private String password;
 
-    @NotNull(message = "First name cannot be null!")
-    @Size(min = 2)
+//    @NotNull(message = "First name cannot be null!")
+//    @Size(min = 2)
     @Column(name = "first_name", nullable = false)
     private String firstName;
 
-    @NotNull(message = "Last name cannot be null!")
+//    @NotNull(message = "Last name cannot be null!")
     @Column(name = "last_name", nullable = false)
     private String lastName;
 

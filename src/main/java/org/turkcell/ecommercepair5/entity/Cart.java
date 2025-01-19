@@ -29,5 +29,7 @@ public class Cart {
     @Column(name = "total_price")
     private BigDecimal totalPrice;
 
+    @Column(name = "is_active", nullable = false)
+    private Boolean isActive;
 
 }
