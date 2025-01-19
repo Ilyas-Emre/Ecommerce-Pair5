@@ -65,4 +65,6 @@ public class Product {
     @JoinColumn(name = "subcategory_id", nullable = false)
     private Subcategory subcategory;
 
+    @Column(name = "is_active", nullable = false)
+    private Boolean isActive;
 }

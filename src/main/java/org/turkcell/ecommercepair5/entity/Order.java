@@ -42,4 +42,7 @@ public class Order {
     @OneToMany(mappedBy = "order")
     @JsonIgnore
     private List<OrderDetail> orderDetails;
+
+    @Column(name = "is_active", nullable = false)
+    private Boolean isActive;
 }
