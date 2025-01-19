@@ -2,6 +2,7 @@ package org.turkcell.ecommercepair5.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -24,16 +25,18 @@ public class Order {
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @NotNull(message = "User cannot be null!")
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @Column(name = "total_price")
     private BigDecimal totalPrice;
 
-    @Column(name = "status")
+    @NotNull(message = "Status cannot be null!")
+    @Column(name = "status", nullable = false)
     private String status;
 
-    @Column(name = "date")
+    @Column(name = "date", nullable = false)
     private LocalDateTime date;
 
     @OneToMany(mappedBy = "order")

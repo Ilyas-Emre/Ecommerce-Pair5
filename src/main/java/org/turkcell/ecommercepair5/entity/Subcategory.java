@@ -23,7 +23,8 @@ public class Subcategory {
     private String name;
 
     @ManyToOne
-    @JoinColumn(name = "category_id")
+    @NotNull(message = "Category cannot be null!")
+    @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
 }

@@ -22,7 +22,8 @@ public class Cart {
     private Integer id;
 
     @OneToOne
-    @JoinColumn(name = "user_id")
+    @NotNull(message = "User cannot be null!")
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @Column(name = "total_price")
