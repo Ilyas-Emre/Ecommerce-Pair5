@@ -41,11 +41,12 @@ public class Product {
 
     @NotNull(message = "Stock quantity cannot be null!")
     @Min(value = 0, message = "Stock quantity cannot be less than 0!")
-    @Column(name = "stock")
+    @Column(name = "stock", nullable = false)
     private Integer stock;
 
     @ManyToOne
-    @JoinColumn(name = "category_id")
+    @NotNull(message = "Category cannot be null!")
+    @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
     @Column(name = "image_url",nullable = true)
@@ -60,7 +61,8 @@ public class Product {
     private List<CartDetail> cartDetails;
 
     @ManyToOne
-    @JoinColumn(name = "subcategory_id")
+    @NotNull(message = "Subcategory cannot be null!")
+    @JoinColumn(name = "subcategory_id", nullable = false)
     private Subcategory subcategory;
 
 }

@@ -1,6 +1,7 @@
 package org.turkcell.ecommercepair5.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -31,9 +32,11 @@ public class OrderDetail {
     @JoinColumn(name = "product_id", referencedColumnName = "id", insertable = false, updatable = false)
     private Product product;
 
+    @NotNull
     @Column(name = "quantity", nullable = false)
     private Integer quantity;
 
+    @NotNull
     @Column(name = "unit_price", nullable = false)
     private BigDecimal unitPrice;
 }
