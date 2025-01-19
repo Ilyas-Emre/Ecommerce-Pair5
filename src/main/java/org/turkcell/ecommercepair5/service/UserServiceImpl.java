@@ -1,4 +1,5 @@
 package org.turkcell.ecommercepair5.service;
+import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.turkcell.ecommercepair5.dto.user.*;
@@ -29,13 +30,15 @@ public class UserServiceImpl implements UserService {
      user.setFirstName(createUserDto.getFirstName());
      user.setLastName(createUserDto.getLastName());
      user.setEmail(createUserDto.getEmail());
-     user.setPassword(createUserDto.getPassword());
+     user.setPassword(bCryptPasswordEncoder.encode(createUserDto.getPassword()));
+     user.setIsActive(true);
      userRepository.save(user);
     }
 
     @Override
     public void update(UpdateUserDto updateUserDto) {
-       User userToUpdate=userRepository.findById(updateUserDto.getId()).orElseThrow(() -> new BusinessException("User not found."));
+       User userToUpdate = userRepository.findById(updateUserDto.getId())
+               .orElseThrow(() -> new BusinessException("User not found."));
         userToUpdate.setFirstName(updateUserDto.getFirstName());
         userToUpdate.setLastName(updateUserDto.getLastName());
         userToUpdate.setEmail(updateUserDto.getEmail());
@@ -45,6 +48,16 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void delete(DeleteUserDto deleteUserDto) {
+        List<Integer> idsToDelete = deleteUserDto.getId();
+
+        for (Integer id : idsToDelete)
+        {
+            User userToDelete = userRepository.findById(id)
+                    .orElseThrow(() -> new BusinessException("User not found with id: " + id));
+            userToDelete.setIsActive(false);
+
+            userRepository.save(userToDelete);
+        }
 
     }
 
@@ -53,7 +66,7 @@ public class UserServiceImpl implements UserService {
         List<UserListingDto> userListingDtos = userRepository
                 .findAll()
                 .stream()
-                .map((user) -> new UserListingDto(user.getId(),user.getFirstName(),user.getLastName(),user.getEmail()))
+                .map((user) -> new UserListingDto(user.getId(),user.getFirstName(),user.getLastName(),user.getEmail(),user.getIsActive()))
                 .toList();
         return userListingDtos;
     }

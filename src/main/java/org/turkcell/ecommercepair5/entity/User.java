@@ -53,5 +53,7 @@ public class User {
     @JsonIgnore
     private List<Order> orders;
 
+    @Column(name = "is_active", nullable = false)
+    private Boolean isActive;
 
 }
