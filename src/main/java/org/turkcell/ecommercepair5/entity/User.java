@@ -22,9 +22,9 @@ import java.util.UUID;
 public class User {
 
     @Id
-    @UuidGenerator
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private UUID id;
+    private Integer id;
 
     @Email(message = "Please enter a valid email address!")
     @NotNull(message = "Email cannot be null!")
@@ -37,7 +37,7 @@ public class User {
     private String password;
 
     @NotNull(message = "First name cannot be null!")
-    @Size(min = 3)
+    @Size(min = 2)
     @Column(name = "first_name", nullable = false)
     private String firstName;
 
