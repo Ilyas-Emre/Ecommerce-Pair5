@@ -1,6 +1,6 @@
 package org.turkcell.ecommercepair5.dto.product;
 
-<<<<<<< HEAD
+
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -34,9 +34,7 @@ public class CreateProductDto {
     @NotNull(message = "Category ID cannot be empty!")
     private Integer categoryId;
 
-    private String imageUrl; // Opsiyonel
+    private Integer subcategory;
 
-=======
-public class CreateProductDto {
->>>>>>> 795569e52179b38f71c23b3864024f09d2056165
+    private String imageUrl; // Opsiyonel
 }

@@ -1,6 +1,5 @@
 package org.turkcell.ecommercepair5.dto.product;
 
-<<<<<<< HEAD
 
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
@@ -38,7 +37,4 @@ public class UpdateProductDto {
     @NotNull(message = "Subcategory ID cannot be empty!")
     private Integer subcategoryId;
 
-=======
-public class UpdateProductDto {
->>>>>>> 795569e52179b38f71c23b3864024f09d2056165
 }
