@@ -1,5 +1,6 @@
 package org.turkcell.ecommercepair5.controller;
 
+<<<<<<< HEAD
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -47,4 +48,7 @@ public class ProductsController {
     }
 
 
+=======
+public class ProductsController {
+>>>>>>> 795569e52179b38f71c23b3864024f09d2056165
 }

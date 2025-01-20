@@ -1,5 +1,6 @@
 package org.turkcell.ecommercepair5.service;
 
+<<<<<<< HEAD
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.turkcell.ecommercepair5.dto.product.CreateProductDto;
@@ -102,4 +103,7 @@ public class ProductServiceImpl implements ProductService {
                 .collect(Collectors.toList());
 
     }
+=======
+public class ProductServiceImpl {
+>>>>>>> 795569e52179b38f71c23b3864024f09d2056165
 }

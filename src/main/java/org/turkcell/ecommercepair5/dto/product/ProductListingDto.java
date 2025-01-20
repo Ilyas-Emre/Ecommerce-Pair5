@@ -1,5 +1,6 @@
 package org.turkcell.ecommercepair5.dto.product;
 
+<<<<<<< HEAD
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -22,4 +23,7 @@ public class ProductListingDto {
 
 
 
+=======
+public class ProductListingDto {
+>>>>>>> 795569e52179b38f71c23b3864024f09d2056165
 }

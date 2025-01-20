@@ -1,5 +1,6 @@
 package org.turkcell.ecommercepair5.dto.product;
 
+<<<<<<< HEAD
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -35,4 +36,7 @@ public class CreateProductDto {
 
     private String imageUrl; // Opsiyonel
 
+=======
+public class CreateProductDto {
+>>>>>>> 795569e52179b38f71c23b3864024f09d2056165
 }

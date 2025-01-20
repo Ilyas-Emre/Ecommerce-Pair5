@@ -1,5 +1,6 @@
 package org.turkcell.ecommercepair5.service;
 
+<<<<<<< HEAD
 import org.turkcell.ecommercepair5.dto.product.CreateProductDto;
 import org.turkcell.ecommercepair5.dto.product.DeleteProductDto;
 import org.turkcell.ecommercepair5.dto.product.ProductListingDto;
@@ -17,4 +18,7 @@ public interface ProductService {
 
 
 
+=======
+public interface ProductService {
+>>>>>>> 795569e52179b38f71c23b3864024f09d2056165
 }
