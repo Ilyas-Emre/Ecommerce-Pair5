@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: ecommerce-pair5
+  datasource:
+    url: "jdbc:postgresql://localhost:5432/ecommerce2"
+    username: postgres
+    password: test
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    showSql: true
+    hibernate:
+      ddlAuto: update
+server:
+  port: 8080
+
+jwt:
+  expiration: 600000
+  secret: "twCdrIdw0rlhQt1WiSAzplkYspw6QzW09CxMmdMfAzwLAliuHMtoQrp5Xb9xy71nNkc8NFFU82KTpEgw3FyfWihtuPlTLsaQ9tSMrOsANQ"
