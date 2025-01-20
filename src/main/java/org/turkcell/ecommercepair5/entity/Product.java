@@ -25,31 +25,31 @@ public class Product {
     @Column(name = "id")
     private Integer id;
 
-    @NotNull(message = "Name cannot be null!")
-    @Size(min = 2, max = 50, message = "Name must be between 2 and 50 characters!")
+    //@NotNull(message = "Name cannot be null!")
+    //@Size(min = 2, max = 50, message = "Name must be between 2 and 50 characters!")
     @Column(name = "name", nullable = false, length = 50, unique = true)
     private String name;
 
-    @Size(max = 500, message = "Description must not exceed 500 characters!")
+    //@Size(max = 500, message = "Description must not exceed 500 characters!")
     @Column(name = "description", nullable = true, length = 500)
     private String description;
 
-    @NotNull(message = "Unit price cannot be null!")
-    @DecimalMin(value = "0.000000000000001", message = "Unit price must be greater than 0")
+    //@NotNull(message = "Unit price cannot be null!")
+    //@DecimalMin(value = "0.000000000000001", message = "Unit price must be greater than 0")
     @Column(name = "unit_price", nullable = false)
     private BigDecimal unitPrice;
 
-    @NotNull(message = "Stock quantity cannot be null!")
-    @Min(value = 0, message = "Stock quantity cannot be less than 0!")
+    //@NotNull(message = "Stock quantity cannot be null!")
+    //@Min(value = 0, message = "Stock quantity cannot be less than 0!")
     @Column(name = "stock", nullable = false)
     private Integer stock;
 
     @ManyToOne
-    @NotNull(message = "Category cannot be null!")
+    //@NotNull(message = "Category cannot be null!")
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
-    @Column(name = "image_url",nullable = true)
+    @Column(name = "image_url",nullable = false)
     private String imageUrl;
 
     @OneToMany(mappedBy = "product")
@@ -62,7 +62,7 @@ public class Product {
 
     @ManyToOne
     //@NotNull(message = "Subcategory cannot be null!")
-    @JoinColumn(name = "subcategory_id", nullable = true)
+    @JoinColumn(name = "subcategory_id", nullable = false)
     private Subcategory subcategory;
 
     @Column(name = "is_active", nullable = false)

@@ -11,7 +11,7 @@ import java.util.Optional;
 @AllArgsConstructor
 public class SubcategoryServiceImpl implements SubcategoryService {
 
-    private SubcategoryRepository subcategoryRepository;
+    private final SubcategoryRepository subcategoryRepository;
     @Override
     public Optional<Subcategory> findById(Integer id)
     {

@@ -4,11 +4,14 @@ package org.turkcell.ecommercepair5.service;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.turkcell.ecommercepair5.dto.product.CreateProductDto;
+import org.turkcell.ecommercepair5.dto.product.DeleteProductDto;
 import org.turkcell.ecommercepair5.dto.product.ProductListingDto;
 import org.turkcell.ecommercepair5.dto.product.UpdateProductDto;
+import org.turkcell.ecommercepair5.dto.user.DeleteUserDto;
 import org.turkcell.ecommercepair5.entity.Category;
 import org.turkcell.ecommercepair5.entity.Product;
 import org.turkcell.ecommercepair5.entity.Subcategory;
+import org.turkcell.ecommercepair5.entity.User;
 import org.turkcell.ecommercepair5.repository.CategoryRepository;
 import org.turkcell.ecommercepair5.repository.ProductRepository;
 import org.turkcell.ecommercepair5.util.exception.type.BusinessException;
@@ -32,7 +35,7 @@ public class ProductServiceImpl implements ProductService {
                 .orElse(null);
 
         Subcategory subcategory = subcategoryService
-                .findById(createProductDto.getCategoryId())
+                .findById(createProductDto.getSubcategoryId())
                 .orElse(null);
 
         Product productWithSameName = productRepository
@@ -77,16 +80,27 @@ public class ProductServiceImpl implements ProductService {
         productRepository.save(productToUpdate);
     }
 
+
     @Override
-    public void deleteProduct(Integer id) {
-        Product product = productRepository.findById(id)
+    public void deleteProduct(DeleteProductDto deleteProductDto) {
+        /*Product product = productRepository.findById(id)
                 .orElseThrow(() -> new BusinessException("Product not found!"));
 
         if (!product.getOrderDetails().isEmpty()) {
             throw new BusinessException("Cannot delete product linked to orders!");
         }
 
-        productRepository.delete(product);
+        productRepository.delete(product);*/
+        List<Integer> idsToDelete = deleteProductDto.getId();
+
+        for (Integer id : idsToDelete)
+        {
+            Product productToDelete = productRepository.findById(id)
+                    .orElseThrow(() -> new BusinessException("User not found with id: " + id));
+            productToDelete.setIsActive(false);
+
+            productRepository.save(productToDelete);
+        }
     }
 
     @Override
@@ -94,7 +108,8 @@ public class ProductServiceImpl implements ProductService {
         List<Product> products = productRepository.findAll();
 
         return products.stream()
-                .filter(product -> (category == null || product.getCategory().getName().equalsIgnoreCase(category)) &&
+                .filter(product -> product.getIsActive() &&
+                        (category == null || product.getCategory().getName().equalsIgnoreCase(category)) &&
                         (minPrice == null || product.getUnitPrice().doubleValue() >= minPrice) &&
                         (maxPrice == null || product.getUnitPrice().doubleValue() <= maxPrice) &&
                         (inStock == null || (inStock && product.getStock() > 0)))
@@ -105,6 +120,7 @@ public class ProductServiceImpl implements ProductService {
                         product.getUnitPrice(),
                         product.getStock(),
                         product.getCategory().getName(),
+                        product.getSubcategory().getName(),
                         product.getImageUrl()
                 ))
                 .collect(Collectors.toList());
