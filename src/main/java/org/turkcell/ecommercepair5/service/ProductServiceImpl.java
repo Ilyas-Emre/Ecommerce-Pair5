@@ -1,6 +1,6 @@
 package org.turkcell.ecommercepair5.service;
 
-<<<<<<< HEAD
+
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.turkcell.ecommercepair5.dto.product.CreateProductDto;
@@ -31,11 +31,15 @@ public class ProductServiceImpl implements ProductService {
                 .findById(createProductDto.getCategoryId())
                 .orElse(null);
 
+        Subcategory subcategory = subcategoryService
+                .findById(createProductDto.getCategoryId())
+                .orElse(null);
+
         Product productWithSameName = productRepository
                 .findByName(createProductDto.getName())
                 .orElse(null);
 
-        if(productWithSameName != null)
+        if (productWithSameName != null)
             throw new BusinessException("Product already exists");
 
 
@@ -44,10 +48,13 @@ public class ProductServiceImpl implements ProductService {
         product.setStock(createProductDto.getStock());
         product.setUnitPrice(createProductDto.getUnitPrice());
         product.setCategory(category);
+        product.setIsActive(true);
+        product.setSubcategory(subcategory);
 
         productRepository.save(product);
 
     }
+
     @Override
     public void updateProduct(UpdateProductDto updateProductDto) {
 
@@ -103,7 +110,4 @@ public class ProductServiceImpl implements ProductService {
                 .collect(Collectors.toList());
 
     }
-=======
-public class ProductServiceImpl {
->>>>>>> 795569e52179b38f71c23b3864024f09d2056165
 }

@@ -61,8 +61,8 @@ public class Product {
     private List<CartDetail> cartDetails;
 
     @ManyToOne
-    @NotNull(message = "Subcategory cannot be null!")
-    @JoinColumn(name = "subcategory_id", nullable = false)
+    //@NotNull(message = "Subcategory cannot be null!")
+    @JoinColumn(name = "subcategory_id", nullable = true)
     private Subcategory subcategory;
 
     @Column(name = "is_active", nullable = false)
