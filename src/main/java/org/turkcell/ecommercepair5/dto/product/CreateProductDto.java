@@ -24,7 +24,7 @@ public class CreateProductDto {
     private String description; //opsiyonel
 
     @NotNull(message = "Unit price cannot be empty!")
-    @DecimalMin(value = "0.01", message = "Unit price must be greater than 0!")
+    @DecimalMin(value = "0.00001", message = "Unit price must be greater than 0!")
     private BigDecimal unitPrice;
 
     @NotNull(message = "Stock cannot be empty!")
@@ -34,7 +34,8 @@ public class CreateProductDto {
     @NotNull(message = "Category ID cannot be empty!")
     private Integer categoryId;
 
-    private Integer subcategory;
+    @NotNull(message = "Subcategory ID cannot be empty!")
+    private Integer subcategoryId;
 
     private String imageUrl; // Opsiyonel
 }
