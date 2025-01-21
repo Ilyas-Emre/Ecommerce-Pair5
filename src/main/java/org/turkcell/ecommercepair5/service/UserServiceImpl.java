@@ -110,6 +110,10 @@ public class UserServiceImpl implements UserService {
                 .findByEmail(loginDto.getEmail())
                 .orElseThrow(() -> new BusinessException("Invalid or wrong credentials."));
 
+        // Check if the user is active
+        if (!dbUser.getIsActive()) {
+            throw new BusinessException("Your account is inactive. Please contact support.");
+        }
 
         boolean isPasswordCorrect = bCryptPasswordEncoder
                 .matches(loginDto.getPassword(), dbUser.getPassword());
