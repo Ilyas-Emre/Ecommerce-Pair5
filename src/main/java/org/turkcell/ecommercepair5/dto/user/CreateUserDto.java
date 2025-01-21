@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
+import org.turkcell.ecommercepair5.validations.ValidPassword;
 
 @Data
 @NoArgsConstructor
@@ -25,6 +26,7 @@ public class CreateUserDto {
 
     @NotBlank(message = "Password cannot be blank!")
     @Size(min = 8, max = 64, message = "Password must be at least 8 characters long!")
+    @ValidPassword
     private String password;
 
 }

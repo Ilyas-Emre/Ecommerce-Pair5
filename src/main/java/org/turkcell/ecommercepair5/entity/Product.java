@@ -27,7 +27,7 @@ public class Product {
 
     //@NotNull(message = "Name cannot be null!")
     //@Size(min = 2, max = 50, message = "Name must be between 2 and 50 characters!")
-    @Column(name = "name", nullable = false, length = 50, unique = true)
+    @Column(name = "name", length = 50, unique = true)
     private String name;
 
     //@Size(max = 500, message = "Description must not exceed 500 characters!")
@@ -36,20 +36,20 @@ public class Product {
 
     //@NotNull(message = "Unit price cannot be null!")
     //@DecimalMin(value = "0.000000000000001", message = "Unit price must be greater than 0")
-    @Column(name = "unit_price", nullable = false)
+    @Column(name = "unit_price")
     private BigDecimal unitPrice;
 
     //@NotNull(message = "Stock quantity cannot be null!")
     //@Min(value = 0, message = "Stock quantity cannot be less than 0!")
-    @Column(name = "stock", nullable = false)
+    @Column(name = "stock")
     private Integer stock;
 
     @ManyToOne
     //@NotNull(message = "Category cannot be null!")
-    @JoinColumn(name = "category_id", nullable = false)
+    @JoinColumn(name = "category_id")
     private Category category;
 
-    @Column(name = "image_url",nullable = false)
+    @Column(name = "image_url")
     private String imageUrl;
 
     @OneToMany(mappedBy = "product")
@@ -62,9 +62,9 @@ public class Product {
 
     @ManyToOne
     //@NotNull(message = "Subcategory cannot be null!")
-    @JoinColumn(name = "subcategory_id", nullable = false)
+    @JoinColumn(name = "subcategory_id")
     private Subcategory subcategory;
 
-    @Column(name = "is_active", nullable = false)
+    @Column(name = "is_active")
     private Boolean isActive;
 }

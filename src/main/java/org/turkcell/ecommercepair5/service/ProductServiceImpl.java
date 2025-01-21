@@ -49,6 +49,8 @@ public class ProductServiceImpl implements ProductService {
         product.setStock(createProductDto.getStock());
         product.setUnitPrice(createProductDto.getUnitPrice());
         product.setCategory(category);
+        product.setImageUrl(createProductDto.getImageUrl());
+        product.setDescription(createProductDto.getDescription());
         product.setIsActive(true);
         product.setSubcategory(subcategory);
 
@@ -75,6 +77,7 @@ public class ProductServiceImpl implements ProductService {
         productToUpdate.setStock(updateProductDto.getStock());
         productToUpdate.setCategory(category);
         productToUpdate.setSubcategory(subcategory);
+        productToUpdate.setImageUrl(updateProductDto.getImageUrl());
         productRepository.save(productToUpdate);
     }
 
@@ -123,6 +126,25 @@ public class ProductServiceImpl implements ProductService {
                 ))
                 .collect(Collectors.toList());
 
+    }
+    @Override
+    public List<Product> getProductsByCategory(Integer categoryId) {
+        return productRepository.findProductsByCategory(categoryId);
+    }
+
+    @Override
+    public List<Product> findAllProductsOrderedByUnitPrice() {
+        return productRepository.findAllProductsOrderedByUnitPrice();
+    }
+
+    @Override
+    public List<Product> findAllProductsOrderedByUnitPriceDesc() {
+        return productRepository.findAllProductsOrderedByUnitPriceDesc();
+    }
+
+    @Override
+    public List<Product> findProductsInStock() {
+        return productRepository.findProductsInStock();
     }
 
     @Override

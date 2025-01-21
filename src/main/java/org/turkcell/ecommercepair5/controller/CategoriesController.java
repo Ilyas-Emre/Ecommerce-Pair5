@@ -10,7 +10,7 @@ import org.turkcell.ecommercepair5.service.CategoryService;
 import java.util.List;
 
 @RestController
-@RequestMapping("categories")
+@RequestMapping("/categories")
 public class CategoriesController {
     private final CategoryService categoryService;
 
@@ -23,13 +23,13 @@ public class CategoriesController {
         return this.categoryService.getAll();
     }
 
-    @PostMapping("create")
+    @PostMapping("/create")
     public void add(@RequestBody @Valid CreateCategoryDto createCategoryDto){
         categoryService.add(createCategoryDto);
     }
 
-    @PutMapping("{id}")
-    public void delete(@PathVariable("id") Integer id){
+    @PutMapping("/delete/{id}")
+    public void delete(@PathVariable Integer id){
         DeleteCategoryDto deleteCategoryDto = new DeleteCategoryDto();
         deleteCategoryDto.setId(id);
 

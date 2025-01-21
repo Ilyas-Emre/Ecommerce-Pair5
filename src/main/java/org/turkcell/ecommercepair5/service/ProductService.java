@@ -17,7 +17,13 @@ public interface ProductService {
     void updateProduct(UpdateProductDto updateProductDto);
     void deleteProduct(DeleteProductDto deleteProductDto);
     List<ProductListingDto> listProducts(String category, Double minPrice, Double maxPrice, Boolean inStock);
+    List<Product> getProductsByCategory(Integer categoryId);
 
+    List<Product> findAllProductsOrderedByUnitPrice();
+
+    List<Product> findAllProductsOrderedByUnitPriceDesc();
+
+    List<Product> findProductsInStock();
 
     boolean hasProductsInCategory(Integer categoryId);
     Optional<Product> findById(Integer productId);
