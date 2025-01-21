@@ -9,13 +9,12 @@ import org.turkcell.ecommercepair5.entity.CartDetailId;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UpdateCartDetailDto {
+public class ReduceProductQuantityDto {
 
     @NotNull(message = "Cart Detail Id cannot be null!")
     private CartDetailId cartDetailId;
 
     @NotNull(message = "Quantity cannot be null!")
     private Integer quantity;
-
 
 }
