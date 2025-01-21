@@ -15,6 +15,7 @@ import java.math.BigDecimal;
 public class UpdateProductDto {
 
     @Min(value = 1, message = "Product ID must be a positive integer!")
+    @NotNull(message = "Id cannot be null!")
     private Integer id;
 
     @Size(min = 2, max = 50, message = "Name must be between 2 and 50 characters!")
@@ -31,10 +32,10 @@ public class UpdateProductDto {
 
     private String imageUrl; //Opsiyonel
 
-    @NotNull(message = "Category ID cannot be empty!")
+//    @NotNull(message = "Category ID cannot be empty!")
     private Integer categoryId;
 
-    @NotNull(message = "Subcategory ID cannot be empty!")
+//    @NotNull(message = "Subcategory ID cannot be empty!")
     private Integer subcategoryId;
 
 }

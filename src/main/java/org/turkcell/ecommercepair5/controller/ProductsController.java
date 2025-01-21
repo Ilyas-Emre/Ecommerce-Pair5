@@ -7,11 +7,14 @@ import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.turkcell.ecommercepair5.dto.cartdetail.CartDetailDto;
 import org.turkcell.ecommercepair5.dto.product.CreateProductDto;
 import org.turkcell.ecommercepair5.dto.product.DeleteProductDto;
 import org.turkcell.ecommercepair5.dto.product.ProductListingDto;
 import org.turkcell.ecommercepair5.dto.product.UpdateProductDto;
 import org.turkcell.ecommercepair5.dto.user.DeleteUserDto;
+import org.turkcell.ecommercepair5.dto.user.UserListingDto;
+import org.turkcell.ecommercepair5.entity.Product;
 import org.turkcell.ecommercepair5.service.ProductService;
 
 import java.util.List;
@@ -49,13 +52,33 @@ public class ProductsController {
         productService.deleteProduct(deleteProductDto);
     }
 
-    @GetMapping
-    public ResponseEntity<List<ProductListingDto>> listProducts(
-            @RequestParam(required = false) String category,
-            @RequestParam(required = false) Double minPrice,
-            @RequestParam(required = false) Double maxPrice,
-            @RequestParam(required = false) Boolean inStock) {
-        List<ProductListingDto> products = productService.listProducts(category, minPrice, maxPrice, inStock);
-        return ResponseEntity.ok(products);
+//    @GetMapping
+//    public ResponseEntity<List<ProductListingDto>> listProducts(
+//            @RequestParam(required = false) String category,
+//            @RequestParam(required = false) Double minPrice,
+//            @RequestParam(required = false) Double maxPrice,
+//            @RequestParam(required = false) Boolean inStock) {
+//        List<ProductListingDto> products = productService.listProducts(category, minPrice, maxPrice, inStock);
+//        return ResponseEntity.ok(products);
+//    }
+    @GetMapping("/category/{categoryId}")
+    public List<Product> getProductsByCategory(@PathVariable Integer categoryId) {
+        return productService.getProductsByCategory(categoryId);
     }
+
+    @GetMapping("/asc")
+    public List<Product> getAllProductsOrderedByUnitPrice() {
+        return productService.findAllProductsOrderedByUnitPrice();
+    }
+
+    @GetMapping("/desc")
+    public List<Product> getAllProductsOrderedByUnitPriceDesc() {
+        return productService.findAllProductsOrderedByUnitPriceDesc();
+    }
+
+    @GetMapping("/instock")
+    public List<Product> getProductsInStock() {
+        return productService.findProductsInStock();
+    }
+
 }
