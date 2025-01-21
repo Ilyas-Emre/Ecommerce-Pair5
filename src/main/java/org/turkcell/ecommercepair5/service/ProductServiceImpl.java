@@ -110,4 +110,9 @@ public class ProductServiceImpl implements ProductService {
                 .collect(Collectors.toList());
 
     }
+
+    @Override
+    public boolean hasProductsInCategory(Integer categoryId) {
+        return productRepository.existsByCategoryId(categoryId);
+    }
 }

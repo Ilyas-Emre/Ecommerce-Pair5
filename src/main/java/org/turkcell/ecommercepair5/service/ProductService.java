@@ -14,4 +14,6 @@ public interface ProductService {
     void updateProduct(UpdateProductDto updateProductDto);
     void deleteProduct(Integer id);
     List<ProductListingDto> listProducts(String category, Double minPrice, Double maxPrice, Boolean inStock);
+
+    boolean hasProductsInCategory(Integer categoryId);
 }
