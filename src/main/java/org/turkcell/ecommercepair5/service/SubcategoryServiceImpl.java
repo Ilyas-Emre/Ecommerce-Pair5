@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 public class SubcategoryServiceImpl implements SubcategoryService {
 
     private final SubcategoryRepository subcategoryRepository;
+
     private final ProductService productService;
     private final CategoryService categoryService;
 
