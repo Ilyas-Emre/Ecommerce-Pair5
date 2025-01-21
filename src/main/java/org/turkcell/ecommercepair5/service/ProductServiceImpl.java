@@ -126,6 +126,10 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public boolean hasProductsInCategory(Integer categoryId) {
+        return productRepository.existsByCategoryId(categoryId);
+    }
+
     public Optional<Product> findById(Integer productId) {
         return productRepository.findById(productId);
     }
