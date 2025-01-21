@@ -6,8 +6,10 @@ import org.turkcell.ecommercepair5.dto.product.DeleteProductDto;
 import org.turkcell.ecommercepair5.dto.product.ProductListingDto;
 import org.turkcell.ecommercepair5.dto.product.UpdateProductDto;
 import org.turkcell.ecommercepair5.dto.user.DeleteUserDto;
+import org.turkcell.ecommercepair5.entity.Product;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ProductService {
 
@@ -15,4 +17,6 @@ public interface ProductService {
     void updateProduct(UpdateProductDto updateProductDto);
     void deleteProduct(DeleteProductDto deleteProductDto);
     List<ProductListingDto> listProducts(String category, Double minPrice, Double maxPrice, Boolean inStock);
+
+    Optional<Product> findById(Integer productId);
 }
