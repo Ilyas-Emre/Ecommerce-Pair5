@@ -52,15 +52,15 @@ public class ProductsController {
         productService.deleteProduct(deleteProductDto);
     }
 
-//    @GetMapping
-//    public ResponseEntity<List<ProductListingDto>> listProducts(
-//            @RequestParam(required = false) String category,
-//            @RequestParam(required = false) Double minPrice,
-//            @RequestParam(required = false) Double maxPrice,
-//            @RequestParam(required = false) Boolean inStock) {
-//        List<ProductListingDto> products = productService.listProducts(category, minPrice, maxPrice, inStock);
-//        return ResponseEntity.ok(products);
-//    }
+    @GetMapping
+    public ResponseEntity<List<ProductListingDto>> listProducts(
+            @RequestParam(required = false) String category,
+            @RequestParam(required = false) Double minPrice,
+            @RequestParam(required = false) Double maxPrice,
+            @RequestParam(required = false) Boolean inStock) {
+        List<ProductListingDto> products = productService.listProducts(category, minPrice, maxPrice, inStock);
+        return ResponseEntity.ok(products);
+    }
     @GetMapping("/category/{categoryId}")
     public List<Product> getProductsByCategory(@PathVariable Integer categoryId) {
         return productService.getProductsByCategory(categoryId);

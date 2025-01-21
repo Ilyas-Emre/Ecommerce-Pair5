@@ -17,8 +17,8 @@ public class ProductListingDto {
     private String description;
     private BigDecimal unitPrice;
     private Integer stock;
-    private Integer categoryId;
-    private Integer subcategoryId;
+    private String categoryName;
+    private String subcategoryName;
     private String imageUrl;
 
 }

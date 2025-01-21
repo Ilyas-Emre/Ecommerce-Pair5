@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.turkcell.ecommercepair5.dto.product.CreateProductDto;
 import org.turkcell.ecommercepair5.dto.product.DeleteProductDto;
+import org.turkcell.ecommercepair5.dto.product.ProductListingDto;
 import org.turkcell.ecommercepair5.dto.product.UpdateProductDto;
 import org.turkcell.ecommercepair5.entity.Category;
 import org.turkcell.ecommercepair5.entity.Product;
@@ -14,6 +15,7 @@ import org.turkcell.ecommercepair5.util.exception.type.BusinessException;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -102,29 +104,29 @@ public class ProductServiceImpl implements ProductService {
         }
     }
 
-//    @Override
-//    public List<ProductListingDto> listProducts(String category, Double minPrice, Double maxPrice, Boolean inStock) {
-//        List<Product> products = productRepository.findAll();
-//
-//        return products.stream()
-//                .filter(product -> product.getIsActive() &&
-//                        (category == null || product.getCategory().getName().equalsIgnoreCase(category)) &&
-//                        (minPrice == null || product.getUnitPrice().doubleValue() >= minPrice) &&
-//                        (maxPrice == null || product.getUnitPrice().doubleValue() <= maxPrice) &&
-//                        (inStock == null || (inStock && product.getStock() > 0)))
-//                .map(product -> new ProductListingDto(
-//                        product.getId(),
-//                        product.getName(),
-//                        product.getDescription(),
-//                        product.getUnitPrice(),
-//                        product.getStock(),
-//                        product.getCategory().getName(),
-//                        product.getSubcategory().getName(),
-//                        product.getImageUrl()
-//                ))
-//                .collect(Collectors.toList());
-//
-//    }
+    @Override
+    public List<ProductListingDto> listProducts(String category, Double minPrice, Double maxPrice, Boolean inStock) {
+        List<Product> products = productRepository.findAll();
+
+        return products.stream()
+                .filter(product -> product.getIsActive() &&
+                        (category == null || product.getCategory().getName().equalsIgnoreCase(category)) &&
+                        (minPrice == null || product.getUnitPrice().doubleValue() >= minPrice) &&
+                        (maxPrice == null || product.getUnitPrice().doubleValue() <= maxPrice) &&
+                        (inStock == null || (inStock && product.getStock() > 0)))
+                .map(product -> new ProductListingDto(
+                        product.getId(),
+                        product.getName(),
+                        product.getDescription(),
+                        product.getUnitPrice(),
+                        product.getStock(),
+                        product.getCategory().getName(),
+                        product.getSubcategory().getName(),
+                        product.getImageUrl()
+                ))
+                .collect(Collectors.toList());
+
+    }
     @Override
     public List<Product> getProductsByCategory(Integer categoryId) {
         return productRepository.findProductsByCategory(categoryId);
