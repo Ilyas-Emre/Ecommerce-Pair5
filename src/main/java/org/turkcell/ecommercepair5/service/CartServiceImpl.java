@@ -9,6 +9,7 @@ import org.turkcell.ecommercepair5.entity.User;
 import org.turkcell.ecommercepair5.repository.CartRepository;
 import org.turkcell.ecommercepair5.repository.ProductRepository;
 import org.turkcell.ecommercepair5.repository.UserRepository;
+import org.turkcell.ecommercepair5.util.exception.type.BusinessException;
 
 import java.util.List;
 import java.util.Optional;
@@ -43,5 +44,14 @@ public class CartServiceImpl implements CartService {
 
         cartRepository.save(userCart);
 
+    }
+
+    @Override
+    public void deleteCartForAUser(Integer id) {
+        Cart cartToDelete = cartRepository.findByUserId(id)
+                .orElseThrow(() -> new BusinessException("Cart not found with user id: " + id)); // Use a custom exception or handle gracefully
+
+        cartToDelete.setIsActive(false); // Mark the cart as inactive
+        cartRepository.save(cartToDelete); // Save the updated cart
     }
 }

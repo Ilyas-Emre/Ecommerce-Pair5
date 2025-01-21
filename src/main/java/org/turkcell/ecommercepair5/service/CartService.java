@@ -16,4 +16,6 @@ public interface CartService {
     Optional<Cart> findByUserId(Integer id);
 
     void save(Cart userCart);
+
+    void deleteCartForAUser(Integer id);
 }

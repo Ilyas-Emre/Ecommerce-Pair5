@@ -1,12 +1,8 @@
 package org.turkcell.ecommercepair5.service;
-import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.turkcell.ecommercepair5.dto.cart.CreateCartDto;
 import org.turkcell.ecommercepair5.dto.user.*;
 import org.turkcell.ecommercepair5.entity.Cart;
-import org.turkcell.ecommercepair5.entity.Category;
-import org.turkcell.ecommercepair5.entity.Order;
 import org.turkcell.ecommercepair5.entity.User;
 import org.turkcell.ecommercepair5.repository.UserRepository;
 import org.turkcell.ecommercepair5.util.exception.type.BusinessException;
@@ -74,16 +70,21 @@ public class UserServiceImpl implements UserService {
             userToDelete.setIsActive(false);
             userRepository.save(userToDelete);
 
-            // Find and deactivate orders for this user
-            List<Order> userOrders = orderService.findByUserId(id);
-            userOrders.forEach(order -> order.setIsActive(false));
-            orderService.saveAll(userOrders);
+//            // Find and deactivate orders for this user
+//            List<Order> userOrders = orderService.findByUserId(id);
+//            userOrders.forEach(order -> order.setIsActive(false));
+//            orderService.saveAll(userOrders);
 
-            // Find and deactivate the cart for this user (since only one cart exists)
-            Cart userCart = cartService.findByUserId(id)
-                    .orElseThrow(() -> new BusinessException("Cart not found for user with id: " + id)); // Unwrap Optional
-            userCart.setIsActive(false);
-            cartService.save(userCart);  // Save the deactivated cart
+            orderService.deleteOrdersForAUser(id);
+
+//            // Find and deactivate the cart for this user (since only one cart exists)
+//            Cart userCart = cartService.findByUserId(id)
+//                    .orElseThrow(() -> new BusinessException("Cart not found for user with id: " + id)); // Unwrap Optional
+//            userCart.setIsActive(false);
+//            cartService.save(userCart);  // Save the deactivated cart
+
+            cartService.deleteCartForAUser(id);
+
         }
     }
 

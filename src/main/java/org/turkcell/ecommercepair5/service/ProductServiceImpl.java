@@ -7,16 +7,14 @@ import org.turkcell.ecommercepair5.dto.product.CreateProductDto;
 import org.turkcell.ecommercepair5.dto.product.DeleteProductDto;
 import org.turkcell.ecommercepair5.dto.product.ProductListingDto;
 import org.turkcell.ecommercepair5.dto.product.UpdateProductDto;
-import org.turkcell.ecommercepair5.dto.user.DeleteUserDto;
 import org.turkcell.ecommercepair5.entity.Category;
 import org.turkcell.ecommercepair5.entity.Product;
 import org.turkcell.ecommercepair5.entity.Subcategory;
-import org.turkcell.ecommercepair5.entity.User;
-import org.turkcell.ecommercepair5.repository.CategoryRepository;
 import org.turkcell.ecommercepair5.repository.ProductRepository;
 import org.turkcell.ecommercepair5.util.exception.type.BusinessException;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -125,5 +123,10 @@ public class ProductServiceImpl implements ProductService {
                 ))
                 .collect(Collectors.toList());
 
+    }
+
+    @Override
+    public Optional<Product> findById(Integer productId) {
+        return productRepository.findById(productId);
     }
 }
