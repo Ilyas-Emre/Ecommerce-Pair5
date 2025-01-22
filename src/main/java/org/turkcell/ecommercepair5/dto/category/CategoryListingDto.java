@@ -1,5 +1,6 @@
 package org.turkcell.ecommercepair5.dto.category;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,6 +18,7 @@ public class CategoryListingDto {
     private Integer id;
     private String name;
     private List<SubcategoryListingDto> subcategories;
+
     //private List<ProductListingDto> products;
 
     public Integer getId() {

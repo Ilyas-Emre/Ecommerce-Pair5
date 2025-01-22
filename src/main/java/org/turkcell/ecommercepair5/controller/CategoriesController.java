@@ -8,6 +8,7 @@ import org.turkcell.ecommercepair5.dto.category.DeleteCategoryDto;
 import org.turkcell.ecommercepair5.service.CategoryService;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/categories")
@@ -18,8 +19,14 @@ public class CategoriesController {
         this.categoryService = categoryService;
     }
 
+    @GetMapping("{id}")
+    public Optional<CategoryListingDto> getCategoryById(@PathVariable("id") Integer id){
+        return this.categoryService.findCategoryById(id);
+    }
+
+    // Tüm kategorileri almak
     @GetMapping
-    public List<CategoryListingDto> getAll(){
+    public List<CategoryListingDto> getAllCategories(){
         return this.categoryService.getAll();
     }
 
