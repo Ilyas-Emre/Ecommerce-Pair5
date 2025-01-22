@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.turkcell.ecommercepair5.dto.order.CreateOrderDto;
 import org.turkcell.ecommercepair5.dto.order.DeleteOrderDto;
+import org.turkcell.ecommercepair5.dto.order.UpdateOrderStatusDto;
 import org.turkcell.ecommercepair5.entity.*;
 import org.turkcell.ecommercepair5.repository.OrderRepository;
 import org.turkcell.ecommercepair5.repository.ProductRepository;
@@ -71,6 +72,15 @@ public class OrderServiceImpl implements OrderService {
 //        });
 //        orderRepository.saveAll(userOrders);
 //    }
+
+    @Override
+    public void updateOrderStatus(UpdateOrderStatusDto updateOrderStatusDto)
+    {
+        Order order = orderRepository.findById(updateOrderStatusDto.getOrderId())
+                .orElseThrow(() -> new BusinessException("Order not found with id: " + updateOrderStatusDto.getOrderId()));
+        order.setStatus(updateOrderStatusDto.getStatus());
+        orderRepository.save(order);
+    }
 
     @Override
     public void deleteOrdersForAUser(Integer id) {

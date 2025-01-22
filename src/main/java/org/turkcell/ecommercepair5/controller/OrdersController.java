@@ -8,6 +8,7 @@ import org.turkcell.ecommercepair5.dto.cartdetail.AddProductToCartDto;
 import org.turkcell.ecommercepair5.dto.cartdetail.UpdateCartDetailDto;
 import org.turkcell.ecommercepair5.dto.order.CreateOrderDto;
 import org.turkcell.ecommercepair5.dto.order.DeleteOrderDto;
+import org.turkcell.ecommercepair5.dto.order.UpdateOrderStatusDto;
 import org.turkcell.ecommercepair5.service.OrderService;
 
 @RestController
@@ -29,6 +30,11 @@ public class OrdersController {
         return ResponseEntity.ok("Order deleted successfully.");
     }
 
+    @PutMapping("/updatestatus")
+    public ResponseEntity<String> updateOrderStatus(@RequestBody @Valid UpdateOrderStatusDto updateOrderStatusDto) {
+        orderService.updateOrderStatus(updateOrderStatusDto);
+        return ResponseEntity.ok("Order status updated successfully.");
+    }
 //    @PutMapping("/update")
 //    public ResponseEntity<String> updateCartDetails(@RequestBody @Valid UpdateCartDetailDto updateCartDetailDto) {
 //        cartDetailService.updateCartDetails(updateCartDetailDto);

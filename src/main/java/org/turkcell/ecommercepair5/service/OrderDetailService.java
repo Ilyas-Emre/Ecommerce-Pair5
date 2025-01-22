@@ -22,4 +22,9 @@ public interface OrderDetailService {
     ViewOrderDto getOrderDetailsWithTotal(Integer orderId);
 
     List<ViewOrderDto> getAllOrdersForUser(Integer userId);
+
+    List<OrderDetailDto> mapOrderDetailsToDtos(List<OrderDetail> orderDetails);
+
+
+    List<ViewOrderDto> getOrdersByUserId(Integer userId);
 }

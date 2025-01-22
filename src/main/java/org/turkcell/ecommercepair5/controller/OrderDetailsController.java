@@ -36,4 +36,10 @@ public class OrderDetailsController {
         return ResponseEntity.ok(userOrders);
     }
 
+    @GetMapping("/{userId}/orders")
+    public ResponseEntity<List<ViewOrderDto>> getOrdersByUserId(@PathVariable Integer userId) {
+        List<ViewOrderDto> orders = orderDetailService.getOrdersByUserId(userId);
+        return ResponseEntity.ok(orders);
+    }
+
 }
