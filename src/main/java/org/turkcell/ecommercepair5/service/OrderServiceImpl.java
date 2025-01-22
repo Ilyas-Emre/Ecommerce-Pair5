@@ -2,19 +2,23 @@ package org.turkcell.ecommercepair5.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.turkcell.ecommercepair5.entity.Order;
-import org.turkcell.ecommercepair5.entity.User;
+import org.turkcell.ecommercepair5.dto.order.CreateOrderDto;
+import org.turkcell.ecommercepair5.entity.*;
 import org.turkcell.ecommercepair5.repository.OrderRepository;
-import org.turkcell.ecommercepair5.repository.SubcategoryRepository;
+import org.turkcell.ecommercepair5.repository.ProductRepository;
 import org.turkcell.ecommercepair5.util.exception.type.BusinessException;
+import java.time.LocalDateTime;
+import java.util.*;
 
-import java.util.List;
-import java.util.Optional;
 
 @Service
 @AllArgsConstructor
 public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
+    private final ProductRepository productRepository;
+    private final CartService cartService;
+    private final CartDetailService cartDetailService;
+    private final ProductService productService;
 
     @Override
     public Optional<Order> findById(Integer id) {
@@ -26,12 +30,26 @@ public class OrderServiceImpl implements OrderService {
         return orderRepository.findByUserId(userId);
     }
 
-    @Override
-    public void saveAll(List<Order> userOrders) {
+    //db den alınacak
+//    private BigDecimal calculateTotalPrice(Order order) {
+//        BigDecimal totalPrice = BigDecimal.ZERO;
+//        for (OrderDetail detail : order.getOrderDetails()) {
+//            totalPrice = totalPrice.add(detail.getUnitPrice().multiply(BigDecimal.valueOf(detail.getQuantity())));
+//        }
+//        return totalPrice;
+//    }
 
-        orderRepository.saveAll(userOrders);
-
-    }
+//    @Override
+//    public void saveAll(List<Order> userOrders) {
+//        userOrders.forEach(order -> {
+//            order.setIsActive(true);
+//            order.setStatus("Hazırlanıyor");
+//            order.setDate(LocalDateTime.now());
+//            cartDetailService.calculateTotal(cartService.findById(userOrders.get(userOrders.)));
+//            //order.setTotalPrice(calculateTotalPrice(order));
+//        });
+//        orderRepository.saveAll(userOrders);
+//    }
 
     @Override
     public void deleteOrdersForAUser(Integer id) {
@@ -41,13 +59,105 @@ public class OrderServiceImpl implements OrderService {
         if (ordersToDelete.isEmpty()) {
             throw new BusinessException("No orders found for user with id: " + id);
         }
-
-        // Set all orders as inactive
         ordersToDelete.forEach(order -> order.setIsActive(false));
-
         orderRepository.saveAll(ordersToDelete);
+    }
+
+    @Override
+    public Order createOrderFromCart(CreateOrderDto createOrderDto) {
+        Integer userId = createOrderDto.getUserId();
+        Integer cartId = createOrderDto.getCartId();
+// Step 1: Fetch the CartID associated with the UserID
+        Cart cart = cartService.findByUserId(userId).orElseThrow(() -> new BusinessException("Cart not found with user id: " + userId));
+        ;
+
+        // Step 2: Fetch cart details using the CartID (and the UserID if needed)
+        List<CartDetail> cartDetails = cartDetailService.findByCartId(cart.getId());
+        if (cartDetails.isEmpty()) {
+            throw new IllegalArgumentException("Cart is empty");
+        }
+
+// Step 3: Validate stock for each product in the cart
+        for (CartDetail detail : cartDetails) {
+            Product product = productService.findById(detail.getProductId()).orElseThrow(() -> new BusinessException("Product not found with  id: " + detail.getProductId()));
+            ;
+
+        }
+
+// Step 4: Create the order
+        Order order = new Order();
+        order.setUser(cart.getUser());
+        order.setStatus("Hazırlanıyor");
+        order.setDate(LocalDateTime.now());
+        order.setTotalPrice(cart.getTotalPrice());
+        order.setIsActive(true);
+
+        double totalAmount = 0.0;
+
+        List<OrderDetail> orderDetails = new ArrayList<>();
+
+        for (CartDetail cartDetail : cartDetails) {
+            Product product = productService.findById(cartDetail.getProductId()).orElseThrow(() -> new BusinessException("Product not found with  id: " + cartDetail.getProductId()));
+            ;
+
+            // Create order details (products in the order)
+            OrderDetail orderDetail = new OrderDetail();
+            orderDetail.setOrder(order);
+            orderDetail.setProduct(product);//TODO: cartDetail.getProduct() da olabilir
+            orderDetail.setQuantity(cartDetail.getQuantity());
+            orderDetail.setUnitPrice(product.getUnitPrice());
+
+            orderDetails.add(orderDetail);
+
+            // Step 5: Update inventory (deduct stock)
+            product.setStock(product.getStock() - cartDetail.getQuantity());
+            productRepository.save(product);
+        }
+
+// Save the order and the associated order details
+        order.setOrderDetails(orderDetails);
+        orderRepository.save(order);
 
 
+// Return the created order with all details
+        return order;
     }
 
 }
+
+
+        //  @Override
+//    public void createOrder(CreateOrderDto createOrderDTO) {
+//        for (CartDetail cartDetail : createOrderDTO.getCartDetails()) {
+//            calculatedTotalAmount += cartDetail.getTotalPrice();
+//        }
+//
+//        if (calculatedTotalAmount != createOrderDTO.getTotalAmount()) {
+//            throw new IllegalArgumentException("Total amount does not match cart details.");
+//        }
+//
+//// Siparişi veritabanına kaydetme işlemi burada yapılır
+//        saveOrderToDatabase(createOrderDTO);
+//
+//
+//
+//        /// ///////
+//        order.setId(UUID.randomUUID().hashCode());
+//        order.setStatus("Hazırlanıyor");
+//        order.setDate(LocalDateTime.now());
+//        order.setIsActive(true);
+//
+//        for(OrderDetail detail: order.getOrderDetails()){
+//            Product product = productRepository.findById(detail
+//                    .getProductId())
+//                    .orElseThrow(() -> new BusinessException("Ürün bulunamadı. Urun ID:" + detail.getProductId()));
+//        if(product.getStock()<detail.getQuantity()){
+//            throw new BusinessException("Stokta yeterli ürün bulunamadı. Stok:" + product.getStock() + ", Ürün ID:" + detail.getProductId());
+//        }
+//
+//        product.setStock(product.getStock() - detail.getQuantity());
+//        productRepository.save(product);
+//        }
+//        orderRepository.save(order);
+//    }
+//}

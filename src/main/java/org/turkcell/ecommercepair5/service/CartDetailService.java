@@ -2,6 +2,7 @@ package org.turkcell.ecommercepair5.service;
 
 import org.turkcell.ecommercepair5.dto.cartdetail.*;
 import org.turkcell.ecommercepair5.entity.Cart;
+import org.turkcell.ecommercepair5.entity.CartDetail;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,4 +20,6 @@ public interface CartDetailService {
     List<CartDetailDto> viewCartDetails(Integer cartId);
 
     ViewCartDto getCartDetailsWithTotal(Integer cartId);
+
+    List<CartDetail> findByCartId(Integer cartId);
 }

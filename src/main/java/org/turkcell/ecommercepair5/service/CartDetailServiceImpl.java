@@ -13,6 +13,7 @@ import org.turkcell.ecommercepair5.util.exception.type.BusinessException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -276,6 +277,11 @@ public class CartDetailServiceImpl implements CartDetailService {
 
         // Return the final ViewCartDto
         return new ViewCartDto(cartTotal, cartDetailDtos);
+    }
+
+    @Override
+    public List<CartDetail> findByCartId(Integer cartId) {
+        return cartDetailRepository.findByCartId(cartId);
     }
 
 
