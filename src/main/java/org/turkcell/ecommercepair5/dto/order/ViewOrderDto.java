@@ -1,55 +1,26 @@
 package org.turkcell.ecommercepair5.dto.order;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.turkcell.ecommercepair5.dto.cartdetail.CartDetailDto;
 import org.turkcell.ecommercepair5.dto.orderdetail.ViewOrderDetailDto;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class ViewOrderDto {
-    private Integer orderId;
+
+    private BigDecimal orderTotal; // Total price for the entire order
+
     private LocalDateTime orderDate;
-    private BigDecimal totalPrice;
+
     private String status;
-    private List<ViewOrderDetailDto> orderDetails;
 
-    public Integer getOrderId() {
-        return orderId;
-    }
+    private List<OrderDetailDto> orderDetails; // List of order details
 
-    public void setOrderId(Integer orderId) {
-        this.orderId = orderId;
-    }
-
-    public LocalDateTime getOrderDate() {
-        return orderDate;
-    }
-
-    public void setOrderDate(LocalDateTime orderDate) {
-        this.orderDate = orderDate;
-    }
-
-    public BigDecimal getTotalPrice() {
-        return totalPrice;
-    }
-
-    public void setTotalPrice(BigDecimal totalPrice) {
-        this.totalPrice = totalPrice;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public List<ViewOrderDetailDto> getOrderDetails() {
-        return orderDetails;
-    }
-
-    public void setOrderDetails(List<ViewOrderDetailDto> orderDetails) {
-        this.orderDetails = orderDetails;
-    }
 }
