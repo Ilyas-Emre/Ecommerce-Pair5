@@ -3,6 +3,7 @@ package org.turkcell.ecommercepair5.service;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.turkcell.ecommercepair5.dto.order.CreateOrderDto;
+import org.turkcell.ecommercepair5.dto.order.DeleteOrderDto;
 import org.turkcell.ecommercepair5.entity.*;
 import org.turkcell.ecommercepair5.repository.OrderRepository;
 import org.turkcell.ecommercepair5.repository.ProductRepository;
@@ -19,6 +20,7 @@ public class OrderServiceImpl implements OrderService {
     private final CartService cartService;
     private final CartDetailService cartDetailService;
     private final ProductService productService;
+    private final OrderDetailService orderDetailService;
 
     @Override
     public Optional<Order> findById(Integer id) {
@@ -28,6 +30,25 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public List<Order> findByUserId(Integer userId) {
         return orderRepository.findByUserId(userId);
+    }
+
+    @Override
+    public void deleteOrderById(DeleteOrderDto deleteOrderDto) {
+
+        Order order = orderRepository.findById(deleteOrderDto.getOrderId()).orElseThrow(() ->
+                new BusinessException("No order found with id: " + deleteOrderDto.getOrderId())
+        );
+        List<OrderDetail> orderDetailsToDelete = orderDetailService.findByOrderId(deleteOrderDto.getOrderId());
+
+
+        if (orderDetailsToDelete.isEmpty()) {
+            throw new BusinessException("No order details found for user with id: " + deleteOrderDto.getOrderId());
+        }
+        orderDetailsToDelete.forEach(orderDetail -> orderDetail.setIsActive(false));
+        orderDetailService.saveAll(orderDetailsToDelete);
+        order.setIsActive(false);
+        order.setStatus("Silindi");
+        orderRepository.save(order);
     }
 
     //db den alınacak
@@ -55,11 +76,22 @@ public class OrderServiceImpl implements OrderService {
     public void deleteOrdersForAUser(Integer id) {
 
         List<Order> ordersToDelete = orderRepository.findByUserId(id);
-
+        List<OrderDetail> orderDetailsToDelete = new ArrayList<>();
+        for (Order order : ordersToDelete) {
+            List<OrderDetail> details = orderDetailService.findByOrderId(order.getId());
+            orderDetailsToDelete.addAll(details);
+        }
         if (ordersToDelete.isEmpty()) {
             throw new BusinessException("No orders found for user with id: " + id);
         }
+        if (orderDetailsToDelete.isEmpty()) {
+            throw new BusinessException("No order details found for user with id: " + id);
+        }
+        orderDetailsToDelete.forEach(orderDetail -> orderDetail.setIsActive(false));
+        orderDetailService.saveAll(orderDetailsToDelete);
+
         ordersToDelete.forEach(order -> order.setIsActive(false));
+        ordersToDelete.forEach(order -> order.setStatus("Silindi"));
         orderRepository.saveAll(ordersToDelete);
     }
 
@@ -91,32 +123,36 @@ public class OrderServiceImpl implements OrderService {
         order.setDate(LocalDateTime.now());
         order.setTotalPrice(cart.getTotalPrice());
         order.setIsActive(true);
-
+// Save the order and the associated order details
+        orderRepository.save(order);
         double totalAmount = 0.0;
 
-        List<OrderDetail> orderDetails = new ArrayList<>();
-
         for (CartDetail cartDetail : cartDetails) {
-            Product product = productService.findById(cartDetail.getProductId()).orElseThrow(() -> new BusinessException("Product not found with  id: " + cartDetail.getProductId()));
-            ;
+            // Fetch the product for the current cart detail
+            Product product = productService.findById(cartDetail.getProductId())
+                    .orElseThrow(() -> new BusinessException("Product not found with id: " + cartDetail.getProductId()));
+            if (cartDetail.getIsActive()){
+                // Create and populate OrderDetail
+                OrderDetail orderDetail = new OrderDetail();
+//            orderDetail.setOrder(order); // Establish relationship with the Order
+                orderDetail.setOrderId(order.getId());
+//            orderDetail.setProduct(product); // Establish relationship with the Product
+                orderDetail.setProductId(product.getId());
+                orderDetail.setQuantity(cartDetail.getQuantity());
+                orderDetail.setUnitPrice(product.getUnitPrice());
+                orderDetail.setIsActive(true); // Assuming you use this field
 
-            // Create order details (products in the order)
-            OrderDetail orderDetail = new OrderDetail();
-            orderDetail.setOrder(order);
-            orderDetail.setProduct(product);//TODO: cartDetail.getProduct() da olabilir
-            orderDetail.setQuantity(cartDetail.getQuantity());
-            orderDetail.setUnitPrice(product.getUnitPrice());
+                // Save the OrderDetail to the database
+                orderDetailService.saveOrderDetail(orderDetail);
 
-            orderDetails.add(orderDetail);
-
-            // Step 5: Update inventory (deduct stock)
-            product.setStock(product.getStock() - cartDetail.getQuantity());
-            productRepository.save(product);
-        }
+                // Update product inventory (deduct stock)
+                product.setStock(product.getStock() - cartDetail.getQuantity());
+                productRepository.save(product);
+            }}
 
 // Save the order and the associated order details
-        order.setOrderDetails(orderDetails);
         orderRepository.save(order);
+
 
 
 // Return the created order with all details
