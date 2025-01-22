@@ -283,7 +283,11 @@ public class CartDetailServiceImpl implements CartDetailService {
     public List<CartDetail> findByCartId(Integer cartId) {
         return cartDetailRepository.findByCartId(cartId);
     }
-    
+
+    @Override
+    public void saveCartDetail(CartDetail cartDetail) {
+        cartDetailRepository.save(cartDetail);
+    }
 
 
 }

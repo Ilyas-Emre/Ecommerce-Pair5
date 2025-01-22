@@ -84,25 +84,25 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void deleteProduct(DeleteProductDto deleteProductDto) {
-        /*Product product = productRepository.findById(id)
-                .orElseThrow(() -> new BusinessException("Product not found!"));
-
-        if (!product.getOrderDetails().isEmpty()) {
-            throw new BusinessException("Cannot delete product linked to orders!");
-        }
-
-        productRepository.delete(product);*/
         List<Integer> idsToDelete = deleteProductDto.getId();
 
-        for (Integer id : idsToDelete)
-        {
+        for (Integer id : idsToDelete) {
             Product productToDelete = productRepository.findById(id)
-                    .orElseThrow(() -> new BusinessException("User not found with id: " + id));
+                    .orElseThrow(() -> new BusinessException("Product not found with id: " + id));
+
+            // Check if the product is linked to any order details
+            if (!productToDelete.getOrderDetails().isEmpty()) {
+                throw new BusinessException("Cannot delete product linked to order details!");
+            }
+
+            // Set the product as inactive instead of deleting it
             productToDelete.setIsActive(false);
 
+            // Save the updated product
             productRepository.save(productToDelete);
         }
     }
+
 
     @Override
     public List<ProductListingDto> listProducts(String category, Double minPrice, Double maxPrice, Boolean inStock) {

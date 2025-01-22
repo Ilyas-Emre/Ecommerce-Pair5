@@ -22,4 +22,6 @@ public interface CartDetailService {
     ViewCartDto getCartDetailsWithTotal(Integer cartId);
 
     List<CartDetail> findByCartId(Integer cartId);
+
+    void saveCartDetail(CartDetail cartDetail);
 }
