@@ -7,14 +7,17 @@ import org.turkcell.ecommercepair5.dto.order.ViewOrderDto;
 import org.turkcell.ecommercepair5.entity.Order;
 import org.turkcell.ecommercepair5.entity.OrderDetail;
 import org.turkcell.ecommercepair5.entity.Product;
+import org.turkcell.ecommercepair5.entity.User;
 import org.turkcell.ecommercepair5.repository.OrderDetailRepository;
 import org.turkcell.ecommercepair5.repository.OrderRepository;
+import org.turkcell.ecommercepair5.repository.UserRepository;
 import org.turkcell.ecommercepair5.util.exception.type.BusinessException;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -22,7 +25,7 @@ public class OrderDetailServiceImpl implements OrderDetailService {
     private final OrderDetailRepository orderDetailRepository;
     private final ProductService productService;
     private final OrderRepository orderRepository;
-
+    private final UserRepository userRepository;
 
     @Override
     public void saveOrderDetail(OrderDetail orderDetail) {
@@ -180,6 +183,41 @@ public class OrderDetailServiceImpl implements OrderDetailService {
                     );
                 })
                 .toList();
+    }
+
+    @Override
+    public List<OrderDetailDto> mapOrderDetailsToDtos(List<OrderDetail> orderDetails) {
+        // Map each OrderDetail to OrderDetailDto
+        return orderDetails.stream()
+                .map(orderDetail -> new OrderDetailDto(
+                        orderDetail.getProduct().getName(),
+                        orderDetail.getUnitPrice(),
+                        orderDetail.getQuantity(),
+                        orderDetail.getUnitPrice().multiply(new BigDecimal(orderDetail.getQuantity()))))
+                .collect(Collectors.toList());
+    }
+
+
+    @Override
+    public List<ViewOrderDto> getOrdersByUserId(Integer userId) {
+        // Find the User entity by ID
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new BusinessException("User not found with ID: " + userId));
+
+        // Find the orders for the user and map to ViewOrderDto
+        List<Order> orders = orderRepository.findOrdersByUserId(user);
+
+        if (orders.isEmpty()) {
+            throw new BusinessException("No orders found for user with ID: " + userId);
+        }
+
+        return orders.stream()
+                .map(order -> new ViewOrderDto(
+                        calculateOrderTotal(order.getId()),
+                        order.getDate(),
+                        order.getStatus(),
+                        mapOrderDetailsToDtos(orderDetailRepository.findByOrderId(order.getId()))))
+                .collect(Collectors.toList());
     }
 
 
