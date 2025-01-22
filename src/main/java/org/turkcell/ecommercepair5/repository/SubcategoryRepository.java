@@ -9,5 +9,6 @@ import java.util.Optional;
 public interface SubcategoryRepository extends JpaRepository<Subcategory, Integer> {
     List<Subcategory> findAllByCategoryId(Integer id);
     Optional<Subcategory> findByName(String name);
-    List<Subcategory> findByCategoryIdAndIsActive(Integer categoryId, Boolean isActive);
+    List<Subcategory> findByCategoryIdAndIsActiveEquals(Integer categoryId, Boolean isActive);
+    List<Subcategory> findByIsActiveEquals(Boolean isActive);
 }

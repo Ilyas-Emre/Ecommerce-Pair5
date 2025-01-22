@@ -2,7 +2,7 @@ spring:
   application:
     name: ecommerce-pair5
   datasource:
-    url: "jdbc:postgresql://localhost:5432/ecommerce2"
+    url: "jdbc:postgresql://localhost:5432/e-commerce"
     username: postgres
     password: test
   jpa:

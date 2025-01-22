@@ -13,7 +13,7 @@ public class CreateSubcategoryDto {
     @NotNull(message = "Category Id cannot be null")
     private Integer categoryId;
 
-    private boolean isActive = true;
+    private boolean isActive;
 
     public String getName() {
         return name;

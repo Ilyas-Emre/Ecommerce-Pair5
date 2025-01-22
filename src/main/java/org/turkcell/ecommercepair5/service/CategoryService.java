@@ -12,7 +12,9 @@ import java.util.Optional;
 
 public interface CategoryService {
 
-    Optional<Category> findById(Integer id);
+     Optional<Category> findById(Integer id);
+
+    Optional<CategoryListingDto> findCategoryById(Integer id);
 
     void add(CreateCategoryDto createCategoryDto);
 
