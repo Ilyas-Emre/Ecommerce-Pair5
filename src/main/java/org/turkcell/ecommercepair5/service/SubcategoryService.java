@@ -13,6 +13,8 @@ public interface SubcategoryService {
 
     Optional<Subcategory> findById(Integer id);
 
+    Optional<SubcategoryListingDto> findCategoryById(Integer id);
+
     void add(CreateSubcategoryDto createSubcategoryDto);
 
     void delete(DeleteSubcategoryDto deleteSubcategoryDto);

@@ -10,6 +10,8 @@ import org.turkcell.ecommercepair5.dto.category.CreateCategoryDto;
 import org.turkcell.ecommercepair5.dto.category.DeleteCategoryDto;
 import org.turkcell.ecommercepair5.entity.Category;
 import org.turkcell.ecommercepair5.repository.CategoryRepository;
+import org.turkcell.ecommercepair5.rules.CategoryBusinessRules;
+import org.turkcell.ecommercepair5.rules.ProductBusinessRules;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,17 +23,32 @@ public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
     private final SubcategoryService subcategoryService;
-    private final ProductService productService;
+    //private final ProductService productService;
+    private final CategoryBusinessRules categoryBusinessRules;
+    private final ProductBusinessRules productBusinessRules;
 
-    public CategoryServiceImpl(CategoryRepository categoryRepository, @Lazy SubcategoryService subcategoryService, @Lazy ProductService productService) {
+    public CategoryServiceImpl(CategoryRepository categoryRepository, @Lazy SubcategoryService subcategoryService, ProductBusinessRules productBusinessRules, CategoryBusinessRules categoryBusinessRules) {
        this.categoryRepository = categoryRepository;
        this.subcategoryService = subcategoryService;
-       this.productService = productService;
+       this.productBusinessRules = productBusinessRules;
+       this.categoryBusinessRules = categoryBusinessRules;
     }
 
     @Override
     public Optional<Category> findById(Integer id) {
         return categoryRepository.findById(id);
+    }
+
+    @Override
+    public Optional<CategoryListingDto> findCategoryById(Integer id) {
+        Category category = categoryBusinessRules.categoryMustExist(id);
+
+        // DTO'yu setter metodlarıyla dolduruyoruz
+        CategoryListingDto categoryListingDto = new CategoryListingDto();
+        categoryListingDto.setId(category.getId());
+        categoryListingDto.setName(category.getName());
+
+        return Optional.of(categoryListingDto);
     }
 
     @Override
@@ -58,12 +75,19 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Transactional
     public void delete(DeleteCategoryDto deleteCategoryDto){
-        Category category = this.findById(deleteCategoryDto.getId())
+
+        Category category = categoryBusinessRules.categoryMustExist(deleteCategoryDto.getId());
+        /*
+        *Category category = this.findById(deleteCategoryDto.getId())
                 .orElseThrow(()-> new RuntimeException("here is no category for this id."));
+        */
 
         // kategoriye ait ürünler var mı kontrol
-        if(productService.hasProductsInCategory(deleteCategoryDto.getId()))
+        productBusinessRules.checkProductsExistInCategory(deleteCategoryDto.getId());
+        /*
+        *if(productService.hasProductsInCategory(deleteCategoryDto.getId()))
             throw new RuntimeException("Category cannot be deleted as it has associated products!");
+        */
 
         category.setIsActive(false);
         categoryRepository.save(category);

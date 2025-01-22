@@ -18,7 +18,7 @@ public class CreateCategoryDto {
     private String name;
 
     private List<CreateSubcategoryDto> subCategories;
-    private Boolean isActive = true;
+    private Boolean isActive;
 
     public String getName() {
         return name;
