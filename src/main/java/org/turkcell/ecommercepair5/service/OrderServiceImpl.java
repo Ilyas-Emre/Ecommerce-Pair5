@@ -109,65 +109,80 @@ public class OrderServiceImpl implements OrderService {
     public Order createOrderFromCart(CreateOrderDto createOrderDto) {
         Integer userId = createOrderDto.getUserId();
         Integer cartId = createOrderDto.getCartId();
-// Step 1: Fetch the CartID associated with the UserID
-        Cart cart = cartService.findByUserId(userId).orElseThrow(() -> new BusinessException("Cart not found with user id: " + userId));
-        ;
 
+        // Step 1: Fetch the Cart associated with the UserID
+        Cart cart = cartService.findByUserId(userId).orElseThrow(() -> new BusinessException("Cart not found with user id: " + userId));
+        cartDetailService.calculateTotal(cart);
         // Step 2: Fetch cart details using the CartID (and the UserID if needed)
         List<CartDetail> cartDetails = cartDetailService.findByCartId(cart.getId());
         if (cartDetails.isEmpty()) {
             throw new IllegalArgumentException("Cart is empty");
         }
 
-// Step 3: Validate stock for each product in the cart
+        // Step 3: Check if all cart details are inactive or if product is missing
+        boolean allInactive = true; // Flag to check if all cart items are inactive
         for (CartDetail detail : cartDetails) {
-            Product product = productService.findById(detail.getProductId()).orElseThrow(() -> new BusinessException("Product not found with  id: " + detail.getProductId()));
-            ;
+            if (detail.getIsActive()) {
+                allInactive = false;
+                Product product = productService.findById(detail.getProductId()).orElseThrow(() -> new BusinessException("Product not found with id: " + detail.getProductId()));
 
+                // Check if there's enough stock
+                if (product.getStock() < detail.getQuantity()) {
+                    throw new BusinessException("Not enough stock for product: " + product.getName());
+                }
+            }
         }
 
-// Step 4: Create the order
+        // If all cart details are inactive, throw an exception
+        if (allInactive) {
+            throw new BusinessException("All cart details are inactive, cannot create order.");
+        }
+
+        // Step 4: Create the order
         Order order = new Order();
         order.setUser(cart.getUser());
-        order.setStatus("Hazırlanıyor");
+        order.setStatus("Hazırlanıyor"); // Assuming "Preparing" status
         order.setDate(LocalDateTime.now());
         order.setTotalPrice(cart.getTotalPrice());
         order.setIsActive(true);
-// Save the order and the associated order details
-        orderRepository.save(order);
-        double totalAmount = 0.0;
 
+        // Save the order
+        orderRepository.save(order);
+
+        // Step 5: Create OrderDetails from active CartDetails
         for (CartDetail cartDetail : cartDetails) {
+            if (!cartDetail.getIsActive()) {
+                continue; // Skip inactive cart details
+            }
+
             // Fetch the product for the current cart detail
             Product product = productService.findById(cartDetail.getProductId())
                     .orElseThrow(() -> new BusinessException("Product not found with id: " + cartDetail.getProductId()));
-            if (cartDetail.getIsActive()){
-                // Create and populate OrderDetail
-                OrderDetail orderDetail = new OrderDetail();
-//            orderDetail.setOrder(order); // Establish relationship with the Order
-                orderDetail.setOrderId(order.getId());
-//            orderDetail.setProduct(product); // Establish relationship with the Product
-                orderDetail.setProductId(product.getId());
-                orderDetail.setQuantity(cartDetail.getQuantity());
-                orderDetail.setUnitPrice(product.getUnitPrice());
-                orderDetail.setIsActive(true); // Assuming you use this field
 
-                // Save the OrderDetail to the database
-                orderDetailService.saveOrderDetail(orderDetail);
+            // Create and populate OrderDetail
+            OrderDetail orderDetail = new OrderDetail();
+            orderDetail.setOrderId(order.getId()); // Link OrderDetail to Order
+            orderDetail.setProductId(product.getId()); // Link OrderDetail to Product
+            orderDetail.setQuantity(cartDetail.getQuantity());
+            orderDetail.setUnitPrice(product.getUnitPrice());
+            orderDetail.setIsActive(true);
 
-                // Update product inventory (deduct stock)
-                product.setStock(product.getStock() - cartDetail.getQuantity());
-                productRepository.save(product);
-            }}
+            // Save the OrderDetail to the database
+            orderDetailService.saveOrderDetail(orderDetail);
 
-// Save the order and the associated order details
-        orderRepository.save(order);
+            // Deduct product stock
+            product.setStock(product.getStock() - cartDetail.getQuantity());
+            productRepository.save(product);
 
+            // Mark CartDetail as inactive (because the product is now ordered)
+            cartDetail.setIsActive(false);
+            cartDetailService.saveCartDetail(cartDetail);
+        }
 
-
-// Return the created order with all details
+        // Return the created order with all details
         return order;
     }
+
 
 }
 
