@@ -3,6 +3,7 @@ package org.turkcell.ecommercepair5.service;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.turkcell.ecommercepair5.dto.order.CreateOrderDto;
+import org.turkcell.ecommercepair5.dto.order.DeleteOrderDto;
 import org.turkcell.ecommercepair5.entity.*;
 import org.turkcell.ecommercepair5.repository.OrderRepository;
 import org.turkcell.ecommercepair5.repository.ProductRepository;
@@ -31,6 +32,25 @@ public class OrderServiceImpl implements OrderService {
         return orderRepository.findByUserId(userId);
     }
 
+    @Override
+    public void deleteOrderById(DeleteOrderDto deleteOrderDto) {
+
+        Order order = orderRepository.findById(deleteOrderDto.getOrderId()).orElseThrow(() ->
+                new BusinessException("No order found with id: " + deleteOrderDto.getOrderId())
+        );
+        List<OrderDetail> orderDetailsToDelete = orderDetailService.findByOrderId(deleteOrderDto.getOrderId());
+
+
+        if (orderDetailsToDelete.isEmpty()) {
+            throw new BusinessException("No order details found for user with id: " + deleteOrderDto.getOrderId());
+        }
+        orderDetailsToDelete.forEach(orderDetail -> orderDetail.setIsActive(false));
+        orderDetailService.saveAll(orderDetailsToDelete);
+        order.setIsActive(false);
+        order.setStatus("Silindi");
+        orderRepository.save(order);
+    }
+
     //db den alınacak
 //    private BigDecimal calculateTotalPrice(Order order) {
 //        BigDecimal totalPrice = BigDecimal.ZERO;
@@ -56,11 +76,22 @@ public class OrderServiceImpl implements OrderService {
     public void deleteOrdersForAUser(Integer id) {
 
         List<Order> ordersToDelete = orderRepository.findByUserId(id);
-
+        List<OrderDetail> orderDetailsToDelete = new ArrayList<>();
+        for (Order order : ordersToDelete) {
+            List<OrderDetail> details = orderDetailService.findByOrderId(order.getId());
+            orderDetailsToDelete.addAll(details);
+        }
         if (ordersToDelete.isEmpty()) {
             throw new BusinessException("No orders found for user with id: " + id);
         }
+        if (orderDetailsToDelete.isEmpty()) {
+            throw new BusinessException("No order details found for user with id: " + id);
+        }
+        orderDetailsToDelete.forEach(orderDetail -> orderDetail.setIsActive(false));
+        orderDetailService.saveAll(orderDetailsToDelete);
+
         ordersToDelete.forEach(order -> order.setIsActive(false));
+        ordersToDelete.forEach(order -> order.setStatus("Silindi"));
         orderRepository.saveAll(ordersToDelete);
     }
 

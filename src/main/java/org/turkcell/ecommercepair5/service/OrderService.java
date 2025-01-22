@@ -1,6 +1,7 @@
 package org.turkcell.ecommercepair5.service;
 
 import org.turkcell.ecommercepair5.dto.order.CreateOrderDto;
+import org.turkcell.ecommercepair5.dto.order.DeleteOrderDto;
 import org.turkcell.ecommercepair5.entity.Order;
 
 import java.util.List;
@@ -14,6 +15,8 @@ public interface OrderService {
     List<Order> findByUserId(Integer userId);
 
     //void saveAll(List<Order> userOrders);
+
+    void deleteOrderById(DeleteOrderDto deleteOrderDto);
 
     void deleteOrdersForAUser(Integer id);
 
