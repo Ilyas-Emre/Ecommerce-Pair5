@@ -103,12 +103,12 @@ public class OrderServiceImpl implements OrderService {
             List<OrderDetail> details = orderDetailService.findByOrderId(order.getId());
             orderDetailsToDelete.addAll(details);
         }
-        if (ordersToDelete.isEmpty()) {
-            throw new BusinessException("No orders found for user with id: " + id);
-        }
-        if (orderDetailsToDelete.isEmpty()) {
-            throw new BusinessException("No order details found for user with id: " + id);
-        }
+//        if (ordersToDelete.isEmpty()) {
+//            throw new BusinessException("No orders found for user with id: " + id);
+//        }
+//        if (orderDetailsToDelete.isEmpty()) {
+//            throw new BusinessException("No order details found for user with id: " + id);
+//        }
         orderDetailsToDelete.forEach(orderDetail -> orderDetail.setIsActive(false));
         orderDetailService.saveAll(orderDetailsToDelete);
 
