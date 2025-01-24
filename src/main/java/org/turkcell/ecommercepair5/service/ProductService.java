@@ -28,4 +28,5 @@ public interface ProductService {
     boolean hasProductsInCategory(Integer categoryId);
     Optional<Product> findById(Integer productId);
 
+    void save(Product product);
 }

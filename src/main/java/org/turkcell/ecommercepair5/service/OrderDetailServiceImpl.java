@@ -1,6 +1,8 @@
 package org.turkcell.ecommercepair5.service;
 
 import lombok.AllArgsConstructor;
+
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.turkcell.ecommercepair5.dto.order.OrderDetailDto;
 import org.turkcell.ecommercepair5.dto.order.ViewOrderDto;
@@ -9,8 +11,6 @@ import org.turkcell.ecommercepair5.entity.OrderDetail;
 import org.turkcell.ecommercepair5.entity.Product;
 import org.turkcell.ecommercepair5.entity.User;
 import org.turkcell.ecommercepair5.repository.OrderDetailRepository;
-import org.turkcell.ecommercepair5.repository.OrderRepository;
-import org.turkcell.ecommercepair5.repository.UserRepository;
 import org.turkcell.ecommercepair5.util.exception.type.BusinessException;
 
 import java.math.BigDecimal;
@@ -20,12 +20,26 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@AllArgsConstructor
+
 public class OrderDetailServiceImpl implements OrderDetailService {
     private final OrderDetailRepository orderDetailRepository;
     private final ProductService productService;
-    private final OrderRepository orderRepository;
-    private final UserRepository userRepository;
+    private final UserService userService;
+    private final OrderService orderService;
+
+
+    public OrderDetailServiceImpl(OrderDetailRepository orderDetailRepository,
+                                  ProductService productService,
+                                  @Lazy OrderService orderService,
+                                  @Lazy UserService userService) {
+        this.orderDetailRepository = orderDetailRepository;
+        this.productService = productService;
+        this.orderService = orderService;
+        this.userService = userService;
+    }
+
+
+
 
     @Override
     public void saveOrderDetail(OrderDetail orderDetail) {
@@ -96,7 +110,8 @@ public class OrderDetailServiceImpl implements OrderDetailService {
 
     @Override
     public ViewOrderDto getOrderDetailsWithTotal(Integer orderId) {
-        Order order = orderRepository.getById(orderId);
+        Order order = orderService.findById(orderId)
+                .orElseThrow(() -> new BusinessException("Order not found with ID: " + orderId));
 
         List<OrderDetail> orderDetails = orderDetailRepository.findByOrderId(orderId);
 
@@ -134,7 +149,7 @@ public class OrderDetailServiceImpl implements OrderDetailService {
     @Override
     public List<ViewOrderDto> getAllOrdersForUser(Integer userId) {
         // Fetch all orders for the given user ID
-        List<Order> orders = orderRepository.findByUserId(userId);
+        List<Order> orders = orderService.findByUserId(userId);
 
         if (orders.isEmpty()) {
             throw new BusinessException("No orders found for user with ID: " + userId);
@@ -201,11 +216,11 @@ public class OrderDetailServiceImpl implements OrderDetailService {
     @Override
     public List<ViewOrderDto> getOrdersByUserId(Integer userId) {
         // Find the User entity by ID
-        User user = userRepository.findById(userId)
+        User user = userService.findById(userId)
                 .orElseThrow(() -> new BusinessException("User not found with ID: " + userId));
 
         // Find the orders for the user and map to ViewOrderDto
-        List<Order> orders = orderRepository.findOrdersByUserId(user);
+        List<Order> orders = orderService.findByUserId(userId);
 
         if (orders.isEmpty()) {
             throw new BusinessException("No orders found for user with ID: " + userId);
