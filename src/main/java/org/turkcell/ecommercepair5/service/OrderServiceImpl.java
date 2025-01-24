@@ -1,6 +1,7 @@
 package org.turkcell.ecommercepair5.service;
 
 import lombok.AllArgsConstructor;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.turkcell.ecommercepair5.dto.order.CreateOrderDto;
 import org.turkcell.ecommercepair5.dto.order.DeleteOrderDto;
@@ -17,11 +18,22 @@ import java.util.*;
 @AllArgsConstructor
 public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
-    private final ProductRepository productRepository;
     private final CartService cartService;
     private final CartDetailService cartDetailService;
     private final ProductService productService;
     private final OrderDetailService orderDetailService;
+
+//    public OrderServiceImpl(OrderRepository orderRepository,
+//                            CartService cartService,
+//                            CartDetailService cartDetailService,
+//                            ProductService productService,
+//                            @Lazy OrderDetailService orderDetailService) {
+//        this.orderRepository = orderRepository;
+//        this.cartService = cartService;
+//        this.cartDetailService = cartDetailService;
+//        this.productService = productService;
+//        this.orderDetailService = orderDetailService;
+//    }
 
     @Override
     public Optional<Order> findById(Integer id) {
@@ -91,12 +103,12 @@ public class OrderServiceImpl implements OrderService {
             List<OrderDetail> details = orderDetailService.findByOrderId(order.getId());
             orderDetailsToDelete.addAll(details);
         }
-        if (ordersToDelete.isEmpty()) {
-            throw new BusinessException("No orders found for user with id: " + id);
-        }
-        if (orderDetailsToDelete.isEmpty()) {
-            throw new BusinessException("No order details found for user with id: " + id);
-        }
+//        if (ordersToDelete.isEmpty()) {
+//            throw new BusinessException("No orders found for user with id: " + id);
+//        }
+//        if (orderDetailsToDelete.isEmpty()) {
+//            throw new BusinessException("No order details found for user with id: " + id);
+//        }
         orderDetailsToDelete.forEach(orderDetail -> orderDetail.setIsActive(false));
         orderDetailService.saveAll(orderDetailsToDelete);
 
@@ -172,7 +184,7 @@ public class OrderServiceImpl implements OrderService {
 
             // Deduct product stock
             product.setStock(product.getStock() - cartDetail.getQuantity());
-            productRepository.save(product);
+            productService.save(product);
 
             // Mark CartDetail as inactive (because the product is now ordered)
             cartDetail.setIsActive(false);

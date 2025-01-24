@@ -45,7 +45,7 @@ public class Product {
     private Integer stock;
 
     @ManyToOne
-    //@NotNull(message = "Category cannot be null!")
+    @NotNull(message = "Category cannot be null!")
     @JoinColumn(name = "category_id")
     private Category category;
 
@@ -61,7 +61,7 @@ public class Product {
     private List<CartDetail> cartDetails;
 
     @ManyToOne
-    //@NotNull(message = "Subcategory cannot be null!")
+    @NotNull(message = "Subcategory cannot be null!")
     @JoinColumn(name = "subcategory_id")
     private Subcategory subcategory;
 
