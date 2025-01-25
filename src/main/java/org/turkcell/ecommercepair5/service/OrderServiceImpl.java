@@ -125,14 +125,14 @@ public class OrderServiceImpl implements OrderService {
         // Step 1: Fetch the Cart associated with the UserID
         Cart cart = cartService.findByUserId(userId).orElseThrow(() -> new BusinessException("Cart not found with user id: " + userId));
         cartDetailService.calculateTotal(cart);
-        // Step 2: Fetch cart details using the CartID (and the UserID if needed)
+        // Step 2: Fetch cart details using the CartID
         List<CartDetail> cartDetails = cartDetailService.findByCartId(cart.getId());
         if (cartDetails.isEmpty()) {
             throw new IllegalArgumentException("Cart is empty");
         }
 
         // Step 3: Check if all cart details are inactive or if product is missing
-        boolean allInactive = true; // Flag to check if all cart items are inactive
+        boolean allInactive = true;
         for (CartDetail detail : cartDetails) {
             if (detail.getIsActive()) {
                 allInactive = false;
