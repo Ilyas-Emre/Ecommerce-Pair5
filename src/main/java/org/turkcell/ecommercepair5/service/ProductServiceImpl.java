@@ -9,7 +9,6 @@ import org.turkcell.ecommercepair5.dto.product.ProductListingDto;
 import org.turkcell.ecommercepair5.dto.product.UpdateProductDto;
 import org.turkcell.ecommercepair5.entity.Category;
 import org.turkcell.ecommercepair5.entity.Product;
-import org.turkcell.ecommercepair5.entity.Subcategory;
 import org.turkcell.ecommercepair5.repository.ProductRepository;
 import org.turkcell.ecommercepair5.util.exception.type.BusinessException;
 
@@ -23,7 +22,7 @@ public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
     private final CategoryService categoryService;
-    private final SubcategoryService subcategoryService;
+    //private final SubcategoryService subcategoryService;
 
     @Override
     public void createProduct(CreateProductDto createProductDto) {
@@ -31,10 +30,11 @@ public class ProductServiceImpl implements ProductService {
         Category category = categoryService
                 .findById(createProductDto.getCategoryId())
                 .orElse(null);
-
-        Subcategory subcategory = subcategoryService
+        /*
+        *Subcategory subcategory = subcategoryService
                 .findById(createProductDto.getSubcategoryId())
                 .orElse(null);
+         */
 
         Product productWithSameName = productRepository
                 .findByName(createProductDto.getName())
@@ -52,7 +52,7 @@ public class ProductServiceImpl implements ProductService {
         product.setImageUrl(createProductDto.getImageUrl());
         product.setDescription(createProductDto.getDescription());
         product.setIsActive(true);
-        product.setSubcategory(subcategory);
+        //product.setSubcategory(subcategory);
 
         productRepository.save(product);
 
@@ -64,10 +64,11 @@ public class ProductServiceImpl implements ProductService {
         Category category = categoryService
                 .findById(updateProductDto.getCategoryId())
                 .orElse(null);
-
-        Subcategory subcategory = subcategoryService
+        /*
+        *Subcategory subcategory = subcategoryService
                 .findById(updateProductDto.getCategoryId())
                 .orElse(null);
+        */
 
         Product productToUpdate = productRepository.findById(updateProductDto.getId())
                 .orElseThrow(() -> new BusinessException("Product not found."));
@@ -76,7 +77,7 @@ public class ProductServiceImpl implements ProductService {
         productToUpdate.setUnitPrice(updateProductDto.getUnitPrice());
         productToUpdate.setStock(updateProductDto.getStock());
         productToUpdate.setCategory(category);
-        productToUpdate.setSubcategory(subcategory);
+        //productToUpdate.setSubcategory(subcategory);
         productToUpdate.setImageUrl(updateProductDto.getImageUrl());
         productRepository.save(productToUpdate);
     }
@@ -121,7 +122,7 @@ public class ProductServiceImpl implements ProductService {
                         product.getUnitPrice(),
                         product.getStock(),
                         product.getCategory().getName(),
-                        product.getSubcategory().getName(),
+                        product.getCategory().getName(),
                         product.getImageUrl()
                 ))
                 .collect(Collectors.toList());

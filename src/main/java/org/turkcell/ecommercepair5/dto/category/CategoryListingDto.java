@@ -1,12 +1,9 @@
 package org.turkcell.ecommercepair5.dto.category;
 
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.turkcell.ecommercepair5.dto.product.ProductListingDto;
-import org.turkcell.ecommercepair5.dto.subcategory.SubcategoryListingDto;
-import org.turkcell.ecommercepair5.entity.Subcategory;
+
 
 import java.util.List;
 
@@ -17,7 +14,7 @@ public class CategoryListingDto {
 
     private Integer id;
     private String name;
-    private List<SubcategoryListingDto> subcategories;
+    private List<CategoryListingDto> subcategories;
 
     //private List<ProductListingDto> products;
 
@@ -37,11 +34,11 @@ public class CategoryListingDto {
         this.name = name;
     }
 
-    public List<SubcategoryListingDto> getSubcategories() {
+    public List<CategoryListingDto> getSubcategories() {
         return subcategories;
     }
 
-    public void setSubcategories(List<SubcategoryListingDto> subcategories) {
+    public void setSubcategories(List<CategoryListingDto> subcategories) {
         this.subcategories = subcategories;
     }
 

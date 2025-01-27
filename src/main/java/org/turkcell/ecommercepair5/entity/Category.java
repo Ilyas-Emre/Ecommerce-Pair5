@@ -26,9 +26,13 @@ public class Category {
     @Column(name = "name", nullable = false, length = 100, unique = true)
     private String name;
 
-    @OneToMany(mappedBy = "category")
+    @ManyToOne
+    @JoinColumn(name = "parent_category_id")
+    private Category parent;
+
+    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
-    private List<Subcategory> subcategories;
+    private List<Category> categories;
 
     @OneToMany(mappedBy = "category")
     @JsonIgnore

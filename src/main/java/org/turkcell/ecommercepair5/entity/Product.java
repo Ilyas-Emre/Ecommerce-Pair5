@@ -60,11 +60,6 @@ public class Product {
     @JsonIgnore
     private List<CartDetail> cartDetails;
 
-    @ManyToOne
-    @NotNull(message = "Subcategory cannot be null!")
-    @JoinColumn(name = "subcategory_id")
-    private Subcategory subcategory;
-
     @Column(name = "is_active")
     private Boolean isActive;
 }

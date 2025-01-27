@@ -36,11 +36,17 @@ public class CategoriesController {
     }
 
     @PutMapping("/delete/{id}")
-    public void delete(@PathVariable Integer id){
+    public void delete(@PathVariable("id") Integer id){
         DeleteCategoryDto deleteCategoryDto = new DeleteCategoryDto();
         deleteCategoryDto.setId(id);
 
         categoryService.delete(deleteCategoryDto);
+    }
+
+    // Öneri: Bu controller'a alt kategorileri listeleme endpoint'i ekleyin
+    @GetMapping("/{id}/subcategories")
+    public List<CategoryListingDto> getSubcategoriesByCategoryId(@PathVariable Integer id) {
+        return categoryService.getAllSubcategoriesByCategoryId(id);
     }
 
 }

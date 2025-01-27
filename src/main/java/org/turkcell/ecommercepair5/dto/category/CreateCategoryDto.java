@@ -1,13 +1,8 @@
 package org.turkcell.ecommercepair5.dto.category;
 
-import jakarta.validation.constraints.Max;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import org.hibernate.validator.constraints.UniqueElements;
-import org.turkcell.ecommercepair5.dto.subcategory.CreateSubcategoryDto;
-import org.turkcell.ecommercepair5.dto.subcategory.SubcategoryListingDto;
-import org.turkcell.ecommercepair5.entity.Product;
-import org.turkcell.ecommercepair5.entity.Subcategory;
 
 import java.util.List;
 
@@ -17,8 +12,19 @@ public class CreateCategoryDto {
     @Size(max = 100, message = "Category name length should be less than 100 char.")
     private String name;
 
-    private List<CreateSubcategoryDto> subCategories;
+    private List<CreateCategoryDto> subCategories;
     private Boolean isActive;
+
+    @JsonProperty("parent_category_id")
+    private Integer parentId;
+
+    public Integer getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(Integer parentId) {
+        this.parentId = parentId;
+    }
 
     public String getName() {
         return name;
@@ -28,11 +34,11 @@ public class CreateCategoryDto {
         this.name = name;
     }
 
-    public List<CreateSubcategoryDto> getSubCategories() {
+    public List<CreateCategoryDto> getSubCategories() {
         return subCategories;
     }
 
-    public void setSubCategories(List<CreateSubcategoryDto> subCategories) {
+    public void setSubCategories(List<CreateCategoryDto> subCategories) {
         this.subCategories = subCategories;
     }
 

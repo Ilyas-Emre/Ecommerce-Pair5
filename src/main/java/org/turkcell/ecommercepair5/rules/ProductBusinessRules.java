@@ -18,4 +18,9 @@ public class ProductBusinessRules {
         if(productRepository.existsByCategoryId(id))
             throw new BusinessException("Products exist in this category, cannot delete.");
     }
+
+    public void hasProductsInCategory(Integer id){
+        if(productRepository.existsByCategoryId(id))
+            throw new RuntimeException("Category cannot be deleted as it has associated products!");
+    }
 }
