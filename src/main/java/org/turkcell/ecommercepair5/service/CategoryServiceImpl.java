@@ -1,8 +1,6 @@
 package org.turkcell.ecommercepair5.service;
 
 
-import lombok.AllArgsConstructor;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.turkcell.ecommercepair5.dto.category.CategoryListingDto;
@@ -22,16 +20,24 @@ import java.util.stream.Collectors;
 public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
-    private final SubcategoryService subcategoryService;
-    //private final ProductService productService;
     private final CategoryBusinessRules categoryBusinessRules;
     private final ProductBusinessRules productBusinessRules;
 
-    public CategoryServiceImpl(CategoryRepository categoryRepository, @Lazy SubcategoryService subcategoryService, ProductBusinessRules productBusinessRules, CategoryBusinessRules categoryBusinessRules) {
+    public CategoryServiceImpl(CategoryRepository categoryRepository, ProductBusinessRules productBusinessRules, CategoryBusinessRules categoryBusinessRules) {
        this.categoryRepository = categoryRepository;
-       this.subcategoryService = subcategoryService;
        this.productBusinessRules = productBusinessRules;
        this.categoryBusinessRules = categoryBusinessRules;
+    }
+
+    @Override
+    public List<CategoryListingDto> getAll(){
+        List<Category> rootCategories = categoryRepository.findAllByIsActiveTrue().stream()
+                .filter(category -> category.getParent() == null)
+                .collect(Collectors.toList());
+
+        return rootCategories.stream()
+                .map(this::convertToCategoryListingDto)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -44,33 +50,27 @@ public class CategoryServiceImpl implements CategoryService {
         Category category = categoryBusinessRules.categoryMustExist(id);
 
         // DTO'yu setter metodlarıyla dolduruyoruz
-        CategoryListingDto categoryListingDto = new CategoryListingDto();
-        categoryListingDto.setId(category.getId());
-        categoryListingDto.setName(category.getName());
+        CategoryListingDto categoryListingDto = convertToCategoryListingDto(category);
 
         return Optional.of(categoryListingDto);
     }
 
     @Override
     public void add(CreateCategoryDto createCategoryDto) {
-        Optional<Category> existingCategory = categoryRepository.findByName(createCategoryDto.getName());
+        // Kategori zaten var mı kontrol et
+        categoryBusinessRules.checkIfCategoryAlreadyExists(createCategoryDto.getName());
 
-        existingCategory.ifPresentOrElse(category -> {
-            if (!category.getIsActive()) {
-                // Kategori pasifse, aktif hale getir
-                category.setIsActive(true);
-                categoryRepository.save(category);
-            } else {
-                // Kategori zaten aktifse hata fırlat
-                throw new RuntimeException("Category with the same name already exists!");
-            }
-        }, () -> {
-            // Yeni bir kategori oluştur
-            Category category = new Category();
-            category.setName(createCategoryDto.getName());
-            category.setIsActive(true); // Varsayılan olarak aktif yap
-            categoryRepository.save(category);
-        });
+        // Yeni bir kategori oluştur
+        Category category = new Category();
+        category.setName(createCategoryDto.getName());
+        category.setIsActive(true); // Varsayılan olarak aktif yap
+
+        if (createCategoryDto.getParentId() != null) {
+            Category parent = categoryBusinessRules.categoryMustExist(createCategoryDto.getParentId());
+            category.setParent(parent);
+        }
+
+        categoryRepository.save(category);
     }
 
     @Transactional
@@ -82,30 +82,52 @@ public class CategoryServiceImpl implements CategoryService {
                 .orElseThrow(()-> new RuntimeException("here is no category for this id."));
         */
 
-        // kategoriye ait ürünler var mı kontrol
-        productBusinessRules.checkProductsExistInCategory(deleteCategoryDto.getId());
+        /*  Ürün varsa hata fırlatır, yoksa devam eder */
+        productBusinessRules.hasProductsInCategory(deleteCategoryDto.getId());
+
         /*
         *if(productService.hasProductsInCategory(deleteCategoryDto.getId()))
             throw new RuntimeException("Category cannot be deleted as it has associated products!");
         */
+        categoryBusinessRules.categoryHasSubcategories(deleteCategoryDto.getId());
 
         category.setIsActive(false);
         categoryRepository.save(category);
     }
 
     @Override
-    public List<CategoryListingDto> getAll() {
+    public List<CategoryListingDto> getAllSubcategoriesByCategoryId(Integer categoryId){
+        List<Category> subcategories = categoryRepository.findAllByParentId(categoryId);
+
+        return subcategories.stream()
+                .map(this::convertToCategoryListingDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<CategoryListingDto> getAllSubcategories() {
         // Veritabanından sadece aktif olan kategorileri alıyoruz
         List<Category> categories = categoryRepository.findAllByIsActiveTrue();
 
         // Kategorileri DTO'ya dönüştür
         List<CategoryListingDto> categoryListingDtos = categories.stream()
-                .map(category -> new CategoryListingDto(
-                        category.getId(),
-                        category.getName(),
-                        subcategoryService.listingSubcategoriesByCategoryId(category.getId()))) // Subcategory'leri de alıyoruz
+                .map(this::convertToCategoryListingDto)
                 .collect(Collectors.toList());
 
         return categoryListingDtos;
+    }
+
+    private CategoryListingDto convertToCategoryListingDto(Category category){
+        List<CategoryListingDto> subcategoryDto = categoryRepository.findAllByParentId(category.getId())
+                .stream()
+                .map(subcategory -> new CategoryListingDto(subcategory.getId(), subcategory.getName(),null))
+                .collect(Collectors.toList());
+
+        return new CategoryListingDto(
+                category.getId(),
+                category.getName(),
+                subcategoryDto /* alt kategorilerin listesini döndürür */
+        );
+
     }
 }
